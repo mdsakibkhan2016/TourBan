@@ -1,0 +1,321 @@
+/* General Styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+/* Footer Section Styling */
+.footer-section {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 50px 0 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>')
+        repeat;
+    z-index: 0;
+}
+
+.footer-section .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Main Footer Layout */
+.footer-main {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.footer-col h4 {
+    color: #ffffff;
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.footer-col h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* Company Links Column */
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 8px;
+}
+
+.footer-col ul li a {
+    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-col ul li a::before {
+    content: '';
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.footer-col ul li a:hover::before {
+    left: 100%;
+}
+
+.footer-col ul li a:hover {
+    color: #ffffff;
+    transform: translateX(10px);
+    background: rgba(102, 126, 234, 0.1);
+    padding-left: 12px;
+}
+
+.footer-col ul li a i {
+    margin-right: 12px;
+    font-size: 14px;
+    color: #667eea;
+}
+
+/* Contact Column */
+.footer-col p {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    padding: 4px 0;
+    transition: all 0.3s ease;
+}
+
+.footer-col p:hover {
+    color: #ffffff;
+    transform: translateX(5px);
+}
+
+.footer-col p i {
+    margin-right: 15px;
+    margin-top: 3px;
+    color: #667eea;
+    font-size: 16px;
+    min-width: 20px;
+}
+
+.social-links {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+/* Social Icon - Default State */
+.social-links a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 45px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    color: #ffffff;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.social-links a::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+}
+
+/* Social Icon - Hover State */
+.social-links a:hover::before {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+}
+
+.social-links a:hover {
+    color: #ffffff;
+    border-color: #667eea;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.social-links a i {
+    position: relative;
+    z-index: 1;
+    font-size: 16px;
+}
+
+/* Gallery Column */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.gallery-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Newsletter Column */
+.newsletter-form {
+    display: flex;
+    margin-top: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.newsletter-form input {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: none;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+}
+
+.newsletter-form button {
+    padding: 12px 20px;
+    border: none;
+    background-color: #2563eb;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.newsletter-form button:hover {
+    background-color: #0056b3;
+}
+
+/* Footer Bottom Section */
+.footer-bottom {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.copyright a {
+    color: #2563eb;
+    font-weight: 500;
+}
+.copyright a:hover {
+    color: #ffffff;
+}
+
+.footer-nav a {
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 15px;
+}
+
+.footer-nav a:hover {
+    color: #ffffff;
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 100px; /* Moved left to avoid chatbot overlap */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 55px;
+    height: 55px;
+    border-radius: 16px;
+    z-index: 999; /* Lower z-index than chatbot */
+    margin-bottom: 80px;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.back-to-top:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+}
+
+.back-to-top i {
+    font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer-nav {
+        margin-top: 10px;
+    }
+
+    /* Mobile responsive back-to-top button positioning */
+    .back-to-top {
+        bottom: 90px; /* Move up on mobile to avoid chatbot */
+        right: 15px; /* Align with mobile margins */
+        width: 45px;
+        height: 45px;
+        margin-bottom: 0; /* Remove extra margin on mobile */
+    }
+
+    .back-to-top i {
+        font-size: 16px; /* Slightly smaller icon for mobile */
+    }
+}

@@ -1,236 +1,505 @@
 <!DOCTYPE html>
 <html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TourBan Website</title>
-    <link rel="stylesheet" href="navbar.css">
-    <link rel="stylesheet" href="herosection.css">
-      <!--for footer-->
-    <link rel="stylesheet" href="footer.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TourBan Website</title>
 
-    
-    <!--For Service-->
-    <link rel="stylesheet" href="service.css">
+        <!-- Bootstrap 5 CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+            crossorigin="anonymous" />
 
-    <!--Chatbot Icon-->
-    <link rel="stylesheet" href="chatbot.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap" rel="stylesheet">
-</head>
-<body>
-    
-    
-    <!--NavBar Dtart-->
-    <nav class="navbar">
-        <div class="navbar-header">
-            <a href="#" class="navbar-brand">
-                <img src="img/TourBan.png" alt="Tourist Logo" class="logo-image">
-                
-            </a>
-            <button class="menu-toggle-button" aria-label="Toggle navigation">☰</button>
-        </div>
+        <!-- External Dependencies -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+            rel="stylesheet" />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap"
+            rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
-        <div class="nav-links" id="navbarNav">
-            <a href="#" class="nav-link">Home</a>
-            <a href="#" class="nav-link">About</a>
-            <!-- <a href="#" class="nav-link">Services</a> -->
-            <a href="#services" class="nav-link">Services</a>
-            <a href="#" class="nav-link">Packages</a>
-            <a href="#" class="nav-link">Contact</a>
-            <a href="#" class="register-button" data-is-register-button="true">Register</a>
-        </div>
-    </nav>
-    <!--NavBar End-->
-
-    <!--Hero Section Start -->
-    <div class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-heading">Celebrate your vacation</h1>
-            <p class="hero-subheading">Because every journey deserves perfection</p>
-            <div class="search-container">
-                <input type="text" id="searchInput" class="search-input" placeholder="Eg: Service">
-                <button type="button" class="search-button">Search</button>
-                <div id="suggestionsBox" class="suggestions-box"></div>   <!--Suggestion Box-->
-            </div>
-        </div>
-    </div>
-    <!--Hero Section End -->
-
-
-
-    <!--About part Start-->
-    <!-- <section id="about" class="dummy-section">
-        About Us
-    </section> -->
-    <!--About part End-->
-
-
-
-       
-     
-
-   
-
-
-
-    <!--service part Start-->
-    
-    <section id="services" class="services-section">
-        <div class="container">
-            <h2 class="section-title">Our Services</h2>
-            <div class="services-grid">
-                <a href="#" class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <h3>Worldwide Tours</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus quo, tenetur, voluptate obcaecati perspiciatis consectetur asperiores quas, dicta nobis sapiente nihil? Cumque non, esse iusto impedit beatae eius consequatur atque.</p>
+        <!-- Custom Styles -->
+        <link rel="stylesheet" href="assets/css/main.css" />
+        <link rel="stylesheet" href="assets/css/footer.css" />
+        <link rel="stylesheet" href="assets/css/chatbot.css" />
+    </head>
+    <body>
+        <!-- Bootstrap Navbar Start -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img
+                        src="assets/images/logo.png"
+                        alt="Tourist Logo"
+                        height="50"
+                        class="d-inline-block align-text-top" />
                 </a>
 
-                <a href="#" class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-hotel"></i>
-                    </div>
-                    <h3>Hotel Reservation</h3>
-                    <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Atque incidunt commodi sit consectetur nisi laudantium? Velit dolorem culpa tenetur excepturi autem deleniti quod consequatur, a maxime laborum cum. Vero, amet.</p>
-                </a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                <a href="#" class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-user-friends"></i>
-                    </div>
-                    <h3>Travel Guides</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti maiores assumenda laboriosam autem tempore tempora nesciunt mollitia nobis, accusamus dolorem fugit optio facilis, voluptatum, quis impedit vero voluptatibus non hic.</p>
-                </a>
-
-                <a href="#" class="service-card">
-                    <div class="service-icon">
-                        <i class="fas fa-cog"></i>
-                    </div>
-                    <h3>Event Management</h3>
-                    <p>Diam elitr kasd sed at elitr sed ipsum justo dolor sed clita amet diam</p>
-                </a>
-                 </div>
-        </div>
-    </section>
-    <!--service part End-->
-
-
-
-
-    <!--Chatbot Start-->
- 
-    <div class="chatbot-widget-container">
-        <!-- Chat Icon -->
-        <div class="chatbot-icon" onclick="toggleChatbot()">
-            <img src="https://www.shutterstock.com/image-vector/chat-bot-icon-virtual-smart-600nw-2478937553.jpg" alt="AI Assistant" class="chatbot-avatar">
-            <span class="chatbot-status-online"></span>
-        </div>
-    </div>
-
-    <!-- Chatbot Modal -->
-    <div id="chatbot-modal" class="chatbot-modal">
-        <div class="chatbot-header">
-            <h4>AI Travel Assistant</h4>
-            <button class="chatbot-close-btn" onclick="toggleChatbot()">&times;</button>
-        </div>
-        <div id="chatbot-messages" class="chatbot-messages">
-            <div class="message-bubble message-ai">
-                <p>স্যার, কিভাবে সহযোগিতা করতে পারি?</p>
-            </div>
-        </div>
-        <div class="chatbot-input-container">
-            <input type="text" id="user-input" class="chatbot-input" placeholder="আপনার প্রশ্ন টাইপ করুন...">
-            <button class="chatbot-send-btn" onclick="sendMessage()">
-                <i class="fa fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-
-                            <!-- Modal Overlay -->
-    <div id="modal-overlay" class="modal-overlay" onclick="toggleChatbot()"></div>
-
-
-    <!--Chatbot End-->
-
-
-
-
-
-    
-    <!--Footer Start-->
-    <footer class="footer-section">
-        <div class="container">
-            <div class="footer-main">
-                <div class="footer-col">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> About Us</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Terms & Condition</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> FAQs & Help</a></li>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="services.html">Services</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="destinations.html">Destinations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact</a>
+                        </li>
                     </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Contact</h4>
-                    <p><i class="fas fa-map-marker-alt"></i> 343/1, Nakhalpara, Dhaka</p>
-                    <p><i class="fas fa-phone-alt"></i> +096 345 67890</p>
-                    <p><i class="fas fa-envelope"></i> tourban@gmail.com</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <div class="d-flex">
+                        <a href="/register.html" class="btn btn-primary px-4">Register</a>
                     </div>
-                </div>
-                <div class="footer-col">
-                    <h4>Gallery</h4>
-                    <div class="gallery-grid">
-                        <a href="#"><img src="img/Gallery Image 1.png" alt="Gallery Image 1"></a>
-                        <a href="#"><img src="img/Gallery Image 2.png" alt="Gallery Image 2"></a>
-                        <a href="#"><img src="img/Gallery Image 3.png" alt="Gallery Image 3"></a>
-                        <a href="#"><img src="img/Gallery Image 4.png" alt="Gallery Image 4"></a>
-                        <a href="#"><img src="img/Gallery Image 5.png" alt="Gallery Image 5"></a>
-                        <a href="#"><img src="img/Gallery Image 6.png" alt="Gallery Image 6"></a>
-                    </div>
-                </div>
-                <div class="footer-col">
-                    <h4>Newsletter</h4>
-                    <p>Dolor sit amet justo amet elitr est.</p>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="Your email" required>
-                        <button type="submit">Sign Up</button>
-                    </form>
                 </div>
             </div>
+        </nav>
+        <!-- Bootstrap Navbar End -->
 
-            <div class="footer-bottom">
-                <div class="copyright">
-                    <p>&copy; <a href="#">TourBan</a>, All Right Reserved. Designed By <a href="#">Me</a></p>
+        <!--Hero Section Start -->
+        <div class="hero-section" style="margin-top: 76px">
+            <div class="hero-content">
+                <h1 class="hero-heading">Discover Your Dream Destinations</h1>
+                <p class="hero-subheading">
+                    Embark on extraordinary journeys with personalized travel experiences crafted just for you
+                </p>
+
+                <div class="hero-features">
+                    <div class="feature-highlight">
+                        <i class="fas fa-globe-americas"></i>
+                        <span>500+ Destinations</span>
+                    </div>
+                    <div class="feature-highlight">
+                        <i class="fas fa-star"></i>
+                        <span>Expert Guides</span>
+                    </div>
+                    <div class="feature-highlight">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Safe Travel</span>
+                    </div>
                 </div>
-                <div class="footer-nav">
-                    <a href="#">Home</a>
-                    <a href="#">Cookies</a>
-                    <a href="#">Help</a>
-                    <a href="#">FAQs</a>
+
+                <div class="search-container" role="search">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="search-input"
+                        placeholder="Where would you like to go?"
+                        aria-label="Search destinations"
+                        aria-describedby="search-instructions"
+                        aria-expanded="false"
+                        aria-autocomplete="list"
+                        autocomplete="off"
+                        spellcheck="false" />
+                    <button type="button" class="search-button" aria-label="Search destinations">
+                        <span>Explore</span>
+                    </button>
+                    <div
+                        id="suggestionsBox"
+                        class="suggestions-box"
+                        role="listbox"
+                        aria-label="Search suggestions"
+                        aria-hidden="true"></div>
+                    <div id="search-instructions" class="sr-only">
+                        Use arrow keys to navigate suggestions, Enter to select, Escape to close
+                    </div>
                 </div>
             </div>
         </div>
+        <!--Hero Section End -->
 
-        <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
-    </footer>
+        <!--About part Start-->
+        <section id="about" class="py-5 bg-light">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 mb-4 mb-lg-0">
+                        <span class="badge bg-primary mb-3">About TourBan</span>
+                        <h2 class="display-5 fw-bold text-primary mb-4">Your Perfect Travel Partner</h2>
+                        <p class="lead mb-4">
+                            At TourBan, we believe that every journey should be extraordinary. With years of experience
+                            in the travel industry, we specialize in creating personalized travel experiences that match
+                            your dreams and exceed your expectations.
+                        </p>
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3"></i>
+                                    <span>Expert Travel Planning</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3"></i>
+                                    <span>24/7 Customer Support</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3"></i>
+                                    <span>Best Price Guarantee</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-check-circle text-success me-3"></i>
+                                    <span>Secure Booking Process</span>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-lg">Learn More About Us</a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="position-relative">
+                            <img
+                                src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&h=400&fit=crop&crop=center&auto=format&q=80"
+                                alt="Travel planning and consultation"
+                                class="img-fluid rounded shadow-lg" />
+                            <div class="position-absolute bottom-0 end-0 p-3">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div class="row text-center">
+                                            <div class="col-6 border-end">
+                                                <h5 class="text-primary fw-bold mb-0">500+</h5>
+                                                <small class="text-muted">Happy Customers</small>
+                                            </div>
+                                            <div class="col-6">
+                                                <h5 class="text-primary fw-bold mb-0">50+</h5>
+                                                <small class="text-muted">Destinations</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--About part End-->
 
-<!--Footer End-->
-    
+        <!--service part Start-->
+        <section id="services" class="py-5">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-4 fw-bold text-primary">Our Services</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm border-0 service-card">
+                            <div class="card-body text-center p-4">
+                                <div class="service-icon mb-3">
+                                    <i class="fas fa-globe fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Worldwide Tours</h5>
+                                <p class="card-text">
+                                    Experience amazing destinations around the world with our expertly crafted tour
+                                    packages. Discover new cultures, breathtaking landscapes, and unforgettable
+                                    adventures.
+                                </p>
+                                <a href="#" class="btn btn-outline-primary">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm border-0 service-card">
+                            <div class="card-body text-center p-4">
+                                <div class="service-icon mb-3">
+                                    <i class="fas fa-hotel fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Hotel Reservation</h5>
+                                <p class="card-text">
+                                    Book premium accommodations worldwide with our extensive network of partner hotels.
+                                    From luxury resorts to boutique properties, find your perfect stay.
+                                </p>
+                                <a href="#" class="btn btn-outline-primary">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
 
-    <script src="chatbot.js"></script>
-    <script src="mobile menu.js"></script>
-    <script src="herosection.js"></script>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-sm border-0 service-card">
+                            <div class="card-body text-center p-4">
+                                <div class="service-icon mb-3">
+                                    <i class="fas fa-user-friends fa-3x text-primary"></i>
+                                </div>
+                                <h5 class="card-title fw-bold">Travel Guides</h5>
+                                <p class="card-text">
+                                    Get expert guidance from our professional travel guides who know every destination
+                                    inside out. Enjoy personalized experiences and local insights.
+                                </p>
+                                <a href="#" class="btn btn-outline-primary">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!--service part End-->
 
-</body>
+        <!--Featured Destinations Start-->
+        <section id="destinations" class="py-5 bg-primary text-white">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="badge bg-light text-primary mb-3">Explore</span>
+                    <h2 class="display-4 fw-bold mb-3">Featured Destinations</h2>
+                    <p class="lead">Discover amazing places around the world with our curated travel packages</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-lg border-0">
+                            <div class="position-relative">
+                                <img
+                                    src="https://images.unsplash.com/photo-1515859005217-8a1f08870f59?w=400&h=250&fit=crop&crop=center&auto=format&q=80"
+                                    alt="Rome Colosseum and Ancient Architecture"
+                                    class="card-img-top"
+                                    style="height: 250px; object-fit: cover" />
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <span class="badge bg-primary fs-6">From $599</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">Rome, Italy</h5>
+                                <p class="card-text">
+                                    Explore the eternal city with its ancient history and magnificent architecture
+                                </p>
+                                <div class="d-flex justify-content-between text-muted small">
+                                    <span><i class="fas fa-clock me-1"></i> 7 Days</span>
+                                    <span><i class="fas fa-users me-1"></i> 2-8 People</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-0">
+                                <a href="#" class="btn btn-primary w-100">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-lg border-0">
+                            <div class="position-relative">
+                                <img
+                                    src="https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=400&h=250&fit=crop&crop=center&auto=format&q=80"
+                                    alt="Santorini White Buildings and Blue Sea"
+                                    class="card-img-top"
+                                    style="height: 250px; object-fit: cover" />
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <span class="badge bg-primary fs-6">From $799</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">Santorini, Greece</h5>
+                                <p class="card-text">
+                                    Experience breathtaking sunsets and crystal-clear waters in this island paradise
+                                </p>
+                                <div class="d-flex justify-content-between text-muted small">
+                                    <span><i class="fas fa-clock me-1"></i> 5 Days</span>
+                                    <span><i class="fas fa-users me-1"></i> 2-6 People</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-0">
+                                <a href="#" class="btn btn-primary w-100">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 shadow-lg border-0">
+                            <div class="position-relative">
+                                <img
+                                    src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=250&fit=crop&crop=center&auto=format&q=80"
+                                    alt="Bali Tropical Paradise and Beaches"
+                                    class="card-img-top"
+                                    style="height: 250px; object-fit: cover" />
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <span class="badge bg-primary fs-6">From $499</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">Bali, Indonesia</h5>
+                                <p class="card-text">
+                                    Discover tropical beaches, ancient temples, and rich cultural heritage
+                                </p>
+                                <div class="d-flex justify-content-between text-muted small">
+                                    <span><i class="fas fa-clock me-1"></i> 6 Days</span>
+                                    <span><i class="fas fa-users me-1"></i> 2-10 People</span>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-0">
+                                <a href="#" class="btn btn-primary w-100">Book Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-5">
+                    <a href="#" class="btn btn-light btn-lg">View All Destinations</a>
+                </div>
+            </div>
+        </section>
+        <!--Featured Destinations End-->
+
+        <!--Chatbot Start-->
+
+        <div class="chatbot-widget-container">
+            <!-- Chat Icon -->
+            <div class="chatbot-icon" onclick="toggleChatbot()">
+                <img
+                    src="https://cdn.jsdelivr.net/gh/twitter/twemoji/assets/svg/1f916.svg"
+                    alt="AI Assistant"
+                    class="chatbot-avatar" />
+                <span class="chatbot-status-online"></span>
+            </div>
+        </div>
+
+        <!-- Chatbot Modal -->
+        <div id="chatbot-modal" class="chatbot-modal">
+            <div class="chatbot-header">
+                <h4>AI Travel Assistant</h4>
+                <button class="chatbot-close-btn" onclick="toggleChatbot()">&times;</button>
+            </div>
+            <div id="chatbot-messages" class="chatbot-messages">
+                <div class="message-bubble message-ai">
+                    <p>স্যার, কিভাবে সহযোগিতা করতে পারি?</p>
+                </div>
+            </div>
+            <div class="chatbot-input-container">
+                <input type="text" id="user-input" class="chatbot-input" placeholder="আপনার প্রশ্ন টাইপ করুন..." />
+                <button class="chatbot-send-btn" onclick="sendMessage()">
+                    <i class="fa fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Overlay -->
+        <div id="modal-overlay" class="modal-overlay" onclick="toggleChatbot()"></div>
+
+        <!--Chatbot End-->
+
+        <!--Footer Start-->
+        <footer id="contact" class="footer-section">
+            <div class="container">
+                <div class="footer-main">
+                    <div class="footer-col">
+                        <h4>Company</h4>
+                        <ul>
+                            <li>
+                                <a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a>
+                            </li>
+                            <li>
+                                <a href="contact.html"><i class="fas fa-chevron-right"></i> Contact Us</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fas fa-chevron-right"></i> Terms & Condition</a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fas fa-chevron-right"></i> FAQs & Help</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Contact</h4>
+                        <p><i class="fas fa-map-marker-alt"></i> 343/1, Nakhalpara, Dhaka</p>
+                        <p><i class="fas fa-phone-alt"></i> +096 345 67890</p>
+                        <p><i class="fas fa-envelope"></i> tourban@gmail.com</p>
+                        <div class="social-links">
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#"><i class="fab fa-youtube"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Gallery</h4>
+                        <div class="gallery-grid">
+                            <a href="#"
+                                ><img
+                                    src="https://images.unsplash.com/photo-1515859005217-8a1f08870f59?w=150&h=150&fit=crop&crop=center&auto=format&q=80"
+                                    alt="Rome Colosseum"
+                            /></a>
+                            <a href="#"
+                                ><img
+                                    src="https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=150&h=150&fit=crop&crop=center&auto=format&q=80"
+                                    alt="Santorini Views"
+                            /></a>
+                            <a href="#"
+                                ><img
+                                    src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=150&h=150&fit=crop&crop=center&auto=format&q=80"
+                                    alt="Bali Beach"
+                            /></a>
+                            <a href="#"
+                                ><img
+                                    src="https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=150&h=150&fit=crop&crop=center&auto=format&q=80"
+                                    alt="Paris Eiffel Tower"
+                            /></a>
+                            <a href="#"
+                                ><img
+                                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=center&auto=format&q=80"
+                                    alt="Dubai Skyline"
+                            /></a>
+                            <a href="#"
+                                ><img
+                                    src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=150&h=150&fit=crop&crop=center&auto=format&q=80"
+                                    alt="Travel Planning"
+                            /></a>
+                        </div>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Newsletter</h4>
+                        <p>Dolor sit amet justo amet elitr est.</p>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Your email" required />
+                            <button type="submit">Sign Up</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <div class="copyright">
+                        <p>&copy; <a href="#">TourBan</a>, All Right Reserved. Designed By <a href="#">Me</a></p>
+                    </div>
+                    <div class="footer-nav">
+                        <a href="#">Home</a>
+                        <a href="#">Cookies</a>
+                        <a href="#">Help</a>
+                        <a href="#">FAQs</a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
+        </footer>
+
+        <!--Footer End-->
+
+        <!-- Bootstrap 5 JavaScript -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+
+        <!-- Custom Scripts -->
+        <script src="assets/js/chatbot.js"></script>
+        <script src="assets/js/herosection.js"></script>
+    </body>
 </html>
