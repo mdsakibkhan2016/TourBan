@@ -278,8 +278,6 @@ a {
     align-items: center;
     width: 55px;
     height: 55px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
     border-radius: 16px;
     z-index: 999; /* Lower z-index than chatbot */
     margin-bottom: 80px;
@@ -289,7 +287,6 @@ a {
 }
 
 .back-to-top:hover {
-    background: linear-gradient(135deg, #5a67d8, #6b46c1);
     transform: translateY(-3px);
     box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
 }
