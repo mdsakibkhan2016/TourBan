@@ -591,4 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Simplified animations for hero elements
+
+    window.searchableContent = searchableContent;
+    window.popularDestinations = popularDestinations;
 });
