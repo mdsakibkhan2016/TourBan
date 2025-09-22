@@ -361,10 +361,7 @@
         <div class="chatbot-widget-container">
             <!-- Chat Icon -->
             <div class="chatbot-icon" onclick="toggleChatbot()">
-                <img
-                    src="https://cdn.jsdelivr.net/gh/twitter/twemoji/assets/svg/1f916.svg"
-                    alt="AI Assistant"
-                    class="chatbot-avatar" />
+                <img src="./assets/images/chat-bot.png" alt="AI Assistant" class="chatbot-avatar" />
                 <span class="chatbot-status-online"></span>
             </div>
         </div>
@@ -377,15 +374,15 @@
             </div>
             <div id="chatbot-messages" class="chatbot-messages">
                 <div class="message-bubble message-ai">
-                    <p>স্যার, কিভাবে সহযোগিতা করতে পারি?</p>
+                    <p>Hello, how can I help you?</p>
                 </div>
             </div>
-            <div class="chatbot-input-container">
-                <input type="text" id="user-input" class="chatbot-input" placeholder="আপনার প্রশ্ন টাইপ করুন..." />
-                <button class="chatbot-send-btn" onclick="sendMessage()">
+            <form class="chatbot-input-container">
+                <input type="text" id="user-input" class="chatbot-input" placeholder="Type your question..." />
+                <button class="chatbot-send-btn" type="submit">
                     <i class="fa fa-paper-plane"></i>
                 </button>
-            </div>
+            </form>
         </div>
 
         <!-- Modal Overlay -->

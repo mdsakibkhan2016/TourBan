@@ -42,7 +42,8 @@ function toggleChatbot() {
     }
 }
 
-function sendMessage() {
+function sendMessage(event) {
+    event.preventDefault();
     const input = document.getElementById('user-input');
     const messagesContainer = document.getElementById('chatbot-messages');
     const userMessageText = input.value.trim();
@@ -54,21 +55,21 @@ function sendMessage() {
     userMessageBubble.classList.add('message-bubble', 'message-user');
     userMessageBubble.innerHTML = `<p>${userMessageText}</p>`;
     messagesContainer.appendChild(userMessageBubble);
-
-    // Clear input field
-    input.value = '';
-
     // Scroll to bottom
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    // Clear input field
+    input.value = '';
 
     // Simple AI response placeholder
     fetchAIResponse(userMessageText).then((aiResponseText) => {
         const aiMessageBubble = document.createElement('div');
         aiMessageBubble.classList.add('message-bubble', 'message-ai');
-        aiMessageBubble.innerHTML = `<p>${aiResponseText || 'আমি দুঃখিত, আমি আপনার প্রশ্নের উত্তর দিতে পারছি না।'}</p>`;
+        aiMessageBubble.innerHTML = `<p>${aiResponseText || "I'm sorry, I can't answer that question."}</p>`;
         messagesContainer.appendChild(aiMessageBubble);
 
         // Scroll to bottom
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 }
+
+document.querySelector('.chatbot-input-container').addEventListener('submit', sendMessage);
