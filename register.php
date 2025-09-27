@@ -1,4 +1,16 @@
-<?php include 'includes/header.php'; ?>
+<?php
+// Check if user is already logged in
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    header('Location: dashboard.php');
+    exit;
+}
+
+include 'includes/header.php';
+?>
 <!-- Registration Section Start -->
 <section class="registration-section" style="margin-top: 76px">
     <div class="container">
@@ -32,6 +44,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="address" class="form-label">Address (Optional)</label>
+                            <textarea
+                                class="form-control"
+                                id="address"
+                                name="address"
+                                rows="3"
+                                placeholder="Enter your address"></textarea>
+                        </div>
+
+                        <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-register w-100">
                                 Create Account
                             </button>
@@ -52,3 +74,6 @@
 <!-- Registration Section End -->
 
 <?php include 'includes/footer.php'; ?>
+
+<!-- Registration JavaScript -->
+<script src="assets/js/registration.js"></script>

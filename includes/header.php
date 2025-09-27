@@ -1,3 +1,12 @@
+<?php
+// Start session and check login status
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+$isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
+$userName = $isLoggedIn ? $_SESSION['user_name'] : '';
+?>
 <!DOCTYPE html>
 <html lang="bn">
 
@@ -72,10 +81,55 @@
                     </li>
                 </ul>
                 <div class="d-flex">
-                    <a href="/login.php" class="btn btn-outline-primary px-4 me-2">Login</a>
-                    <a href="/register.php" class="btn btn-primary px-4">Register</a>
+                    <?php if ($isLoggedIn): ?>
+                        <!-- User is logged in - show user menu -->
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle px-4" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user me-2"></i><?php echo htmlspecialchars($userName); ?>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="/profile.php"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    <?php else: ?>
+                        <!-- User is not logged in - show login/register buttons -->
+                        <a href="/login.php" class="btn btn-outline-primary px-4 me-2">Login</a>
+                        <a href="/register.php" class="btn btn-primary px-4">Register</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     </nav>
     <!-- Bootstrap Navbar End -->
+
+    <!-- Logout JavaScript Function -->
+    <script>
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                fetch('api/logout.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            window.location.href = '/login.php';
+                        } else {
+                            alert('Logout failed. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Logout error:', error);
+                        // Force redirect even if API call fails
+                        window.location.href = '/login.php';
+                    });
+            }
+        }
+    </script>

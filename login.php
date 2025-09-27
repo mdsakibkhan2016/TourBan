@@ -1,4 +1,16 @@
-<?php include 'includes/header.php'; ?>
+<?php
+// Check if user is already logged in
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
+    header('Location: dashboard.php');
+    exit;
+}
+
+include 'includes/header.php';
+?>
 <!-- Login Section Start -->
 <section class="login-section" style="margin-top: 76px">
     <div class="container">

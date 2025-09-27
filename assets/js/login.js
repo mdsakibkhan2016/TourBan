@@ -55,30 +55,42 @@ function handleFormSubmit(event) {
     const submitButton = document.querySelector('.btn-login');
     setLoadingState(submitButton, true);
 
-    // Simulate login API call (replace with actual API call)
-    setTimeout(() => {
-        // Simulate successful login
-        if (data.email === 'demo@example.com' && data.password === 'password123') {
-            showSuccessMessage('Login successful! Redirecting...');
+    // Make API call to login endpoint
+    fetch('api/login.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then((response) => response.json())
+        .then((result) => {
+            if (result.success) {
+                showSuccessMessage('Login successful! Redirecting...');
 
-            // Store login state if remember me is checked
-            if (data.rememberMe) {
-                localStorage.setItem('rememberMe', 'true');
-                localStorage.setItem('userEmail', data.email);
+                // Store login state if remember me is checked
+                if (data.rememberMe) {
+                    localStorage.setItem('rememberMe', 'true');
+                    localStorage.setItem('userEmail', data.email);
+                } else {
+                    sessionStorage.setItem('userEmail', data.email);
+                }
+
+                // Redirect to dashboard
+                setTimeout(() => {
+                    window.location.href = '/dashboard.php';
+                }, 1500);
             } else {
-                sessionStorage.setItem('userEmail', data.email);
+                showErrorMessage(result.message || 'Login failed. Please try again.');
             }
-
-            // Redirect to dashboard or home page
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 1500);
-        } else {
-            showErrorMessage('Invalid email or password. Please try again.');
-        }
-
-        setLoadingState(submitButton, false);
-    }, 1500);
+        })
+        .catch((error) => {
+            console.error('Login error:', error);
+            showErrorMessage('Network error. Please check your connection and try again.');
+        })
+        .finally(() => {
+            setLoadingState(submitButton, false);
+        });
 }
 
 function validateForm(data) {

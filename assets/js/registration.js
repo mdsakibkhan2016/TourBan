@@ -28,7 +28,8 @@ function handleFormSubmit(event) {
     const data = {
         name: formData.get('name'),
         email: formData.get('email'),
-        password: formData.get('password')
+        password: formData.get('password'),
+        address: formData.get('address')
     };
 
     // Basic validation
@@ -47,11 +48,33 @@ function handleFormSubmit(event) {
     submitButton.textContent = 'Creating Account...';
     submitButton.disabled = true;
 
-    // Simulate registration (replace with actual API call)
-    setTimeout(() => {
-        alert('Account created successfully!');
-        form.reset();
-        submitButton.textContent = 'Create Account';
-        submitButton.disabled = false;
-    }, 1500);
+    // Make API call to registration endpoint
+    fetch('api/register.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then((response) => response.json())
+        .then((result) => {
+            if (result.success) {
+                alert('Account created successfully! Redirecting to login...');
+                form.reset();
+                // Redirect to login page
+                setTimeout(() => {
+                    window.location.href = '/login.php';
+                }, 1000);
+            } else {
+                alert(result.message || 'Registration failed. Please try again.');
+            }
+        })
+        .catch((error) => {
+            console.error('Registration error:', error);
+            alert('Network error. Please check your connection and try again.');
+        })
+        .finally(() => {
+            submitButton.textContent = 'Create Account';
+            submitButton.disabled = false;
+        });
 }

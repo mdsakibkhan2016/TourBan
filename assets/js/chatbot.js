@@ -1,4 +1,4 @@
-const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 const key = localStorage.getItem('google_api_key') || 'your_api_key';
 
 async function fetchAIResponse(prompt) {
