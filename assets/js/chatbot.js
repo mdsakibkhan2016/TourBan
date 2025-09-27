@@ -42,6 +42,17 @@ function toggleChatbot() {
     }
 }
 
+// Helper function for typing effect
+async function typeText(element, text, chatContainer) {
+    element.innerHTML = ''; // Clear existing content
+    for (let i = 0; i < text.length; i++) {
+        element.innerHTML += text.charAt(i);
+        // Add a slight delay for a typing effect
+        await new Promise((resolve) => setTimeout(resolve, 5));
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+}
+
 function sendMessage(event) {
     event.preventDefault();
     const input = document.getElementById('user-input');
@@ -60,11 +71,18 @@ function sendMessage(event) {
     // Clear input field
     input.value = '';
 
+    // added typing indicator
+    const typingIndicator = document.createElement('div');
+    typingIndicator.classList.add('message-bubble', 'message-ai');
+    typingIndicator.innerHTML = `<p>Thinking...</p>`;
+    messagesContainer.appendChild(typingIndicator);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
     // Simple AI response placeholder
     fetchAIResponse(userMessageText).then((aiResponseText) => {
         const aiMessageBubble = document.createElement('div');
         aiMessageBubble.classList.add('message-bubble', 'message-ai');
-        aiMessageBubble.innerHTML = `<p>${aiResponseText || "I'm sorry, I can't answer that question."}</p>`;
+        typeText(aiMessageBubble, aiResponseText, messagesContainer);
         messagesContainer.appendChild(aiMessageBubble);
 
         // Scroll to bottom
