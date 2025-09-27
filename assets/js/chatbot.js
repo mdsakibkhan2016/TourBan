@@ -77,17 +77,26 @@ function sendMessage(event) {
     typingIndicator.innerHTML = `<p>Thinking...</p>`;
     messagesContainer.appendChild(typingIndicator);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    const aiMessageBubble = document.createElement('div');
 
     // Simple AI response placeholder
-    fetchAIResponse(userMessageText).then((aiResponseText) => {
-        const aiMessageBubble = document.createElement('div');
-        aiMessageBubble.classList.add('message-bubble', 'message-ai');
-        typeText(aiMessageBubble, aiResponseText, messagesContainer);
-        messagesContainer.appendChild(aiMessageBubble);
+    fetchAIResponse(userMessageText)
+        .then((aiResponseText) => {
+            typingIndicator.remove();
+            aiMessageBubble.classList.add('message-bubble', 'message-ai');
+            typeText(aiMessageBubble, aiResponseText, messagesContainer);
+            messagesContainer.appendChild(aiMessageBubble);
 
-        // Scroll to bottom
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    });
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        })
+        .catch((error) => {
+            typeText(aiMessageBubble, error.message || "I'm sorry, I can't answer that question.", messagesContainer);
+            typingIndicator.remove();
+        });
+
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 document.querySelector('.chatbot-input-container').addEventListener('submit', sendMessage);

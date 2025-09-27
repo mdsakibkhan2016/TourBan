@@ -26,6 +26,8 @@
     <link rel="stylesheet" href="assets/css/main.css" />
     <link rel="stylesheet" href="assets/css/footer.css" />
     <link rel="stylesheet" href="assets/css/chatbot.css" />
+    <link rel="stylesheet" href="assets/css/registration.css" />
+    <link rel="stylesheet" href="assets/css/login.css" />
 </head>
 
 <body>
@@ -70,8 +72,8 @@
                     </li>
                 </ul>
                 <div class="d-flex">
-                    <a href="/login.html" class="btn btn-outline-primary px-4 me-2">Login</a>
-                    <a href="/register.html" class="btn btn-primary px-4">Register</a>
+                    <a href="/login.php" class="btn btn-outline-primary px-4 me-2">Login</a>
+                    <a href="/register.php" class="btn btn-primary px-4">Register</a>
                 </div>
             </div>
         </div>
