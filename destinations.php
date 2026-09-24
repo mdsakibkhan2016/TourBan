@@ -1,5 +1,10 @@
-<?php include 'includes/header.php'; ?>
+<?php
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/bookings.php';
 
+$bookingHelper = new Bookings();
+$destinations = $bookingHelper->allDestinations();
+?>
 <div>
     <!-- Hero Section -->
     <section class="bg-primary text-white py-5" style="margin-top: 76px">
@@ -19,13 +24,13 @@
                     <h5 class="mb-3 mb-lg-0">Filter Destinations:</h5>
                 </div>
                 <div class="col-lg-6">
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-outline-primary btn-sm active">All</button>
-                        <button class="btn btn-outline-primary btn-sm">Europe</button>
-                        <button class="btn btn-outline-primary btn-sm">Asia</button>
-                        <button class="btn btn-outline-primary btn-sm">Africa</button>
-                        <button class="btn btn-outline-primary btn-sm">Americas</button>
-                        <button class="btn btn-outline-primary btn-sm">Oceania</button>
+                    <div class="d-flex flex-wrap gap-2" id="regionFilters">
+                        <button type="button" class="btn btn-outline-primary btn-sm active" data-region="all">All</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-region="Europe">Europe</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-region="Asia">Asia</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-region="Africa">Africa</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-region="Americas">Americas</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-region="Oceania">Oceania</button>
                     </div>
                 </div>
             </div>
@@ -39,386 +44,56 @@
                 <h2 class="display-5 fw-bold text-primary">Popular Destinations</h2>
                 <p class="lead">Our most loved travel destinations</p>
             </div>
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 destination-card-hover">
-                        <div class="position-relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1515859005217-8a1f08870f59?w=400&h=250&fit=crop&crop=center&auto=format&q=80"
-                                alt="Rome, Italy"
-                                class="card-img-top"
-                                style="height: 250px; object-fit: cover" />
-                            <div class="position-absolute top-0 end-0 m-3">
-                                <span class="badge bg-danger fs-6">20% OFF</span>
-                            </div>
-                            <div class="position-absolute top-0 start-0 m-3">
-                                <span class="badge bg-primary fs-6">From $599</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold mb-0">Rome, Italy</h5>
-                                <div class="text-warning">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <small class="text-muted ms-1">(4.9)</small>
+
+            <?php if (!$destinations): ?>
+                <div class="text-center py-5">
+                    <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
+                    <h5>No destinations available yet</h5>
+                    <p class="text-muted">Please check back soon — our team is curating new trips.</p>
+                    <a href="contact.php" class="btn btn-primary mt-2">Contact us for custom trips</a>
+                </div>
+            <?php else: ?>
+                <div class="row g-4" id="destinationGrid">
+                    <?php foreach ($destinations as $d): ?>
+                        <div class="col-lg-4 col-md-6 destination-item" data-region="<?php echo htmlspecialchars($d['region'], ENT_QUOTES, 'UTF-8'); ?>">
+                            <div class="card h-100 shadow-sm border-0 destination-card-hover">
+                                <div class="position-relative">
+                                    <img
+                                        src="<?php echo htmlspecialchars($d['image_url'], ENT_QUOTES, 'UTF-8'); ?>"
+                                        alt="<?php echo htmlspecialchars($d['name'], ENT_QUOTES, 'UTF-8'); ?>"
+                                        class="card-img-top"
+                                        style="height: 250px; object-fit: cover" />
+                                    <div class="position-absolute top-0 start-0 m-3">
+                                        <span class="badge bg-primary fs-6">From $<?php echo htmlspecialchars(number_format((float) $d['price_from'], 0), ENT_QUOTES, 'UTF-8'); ?></span>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h5 class="card-title fw-bold mb-0"><?php echo htmlspecialchars($d['name'], ENT_QUOTES, 'UTF-8'); ?></h5>
+                                        <div class="text-warning">
+                                            <i class="fas fa-star"></i>
+                                            <small class="text-muted ms-1">(<?php echo htmlspecialchars($d['rating'], ENT_QUOTES, 'UTF-8'); ?>)</small>
+                                        </div>
+                                    </div>
+                                    <p class="card-text"><?php echo htmlspecialchars(mb_substr((string) $d['description'], 0, 140), ENT_QUOTES, 'UTF-8'); ?></p>
+                                    <div class="d-flex justify-content-between text-muted small mb-3">
+                                        <span><i class="fas fa-clock me-1"></i> <?php echo (int) $d['duration_days']; ?> Days</span>
+                                        <span><i class="fas fa-users me-1"></i> <?php echo htmlspecialchars($d['group_size'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                        <span><i class="fas fa-map-marker-alt me-1"></i> <?php echo htmlspecialchars($d['region'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <a href="booking.php?dest=<?php echo urlencode($d['slug']); ?>" class="btn btn-primary flex-fill">Book Now</a>
+                                        <a href="contact.php" class="btn btn-outline-primary">Details</a>
+                                    </div>
                                 </div>
                             </div>
-                            <p class="card-text">
-                                Explore the eternal city with its ancient history, magnificent architecture, and
-                                world-renowned cuisine.
-                            </p>
-                            <div class="d-flex justify-content-between text-muted small mb-3">
-                                <span><i class="fas fa-clock me-1"></i> 7 Days</span>
-                                <span><i class="fas fa-users me-1"></i> 2-8 People</span>
-                                <span><i class="fas fa-map-marker-alt me-1"></i> Europe</span>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-primary flex-fill">Book Now</a>
-                                <a href="#" class="btn btn-outline-primary">Details</a>
-                            </div>
                         </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 destination-card-hover">
-                        <div class="position-relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1613395877344-13d4a8e0d49e?w=400&h=250&fit=crop&crop=center&auto=format&q=80"
-                                alt="Santorini, Greece"
-                                class="card-img-top"
-                                style="height: 250px; object-fit: cover" />
-                            <div class="position-absolute top-0 start-0 m-3">
-                                <span class="badge bg-primary fs-6">From $799</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold mb-0">Santorini, Greece</h5>
-                                <div class="text-warning">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <small class="text-muted ms-1">(4.8)</small>
-                                </div>
-                            </div>
-                            <p class="card-text">
-                                Experience breathtaking sunsets and crystal-clear waters in this stunning island
-                                paradise.
-                            </p>
-                            <div class="d-flex justify-content-between text-muted small mb-3">
-                                <span><i class="fas fa-clock me-1"></i> 5 Days</span>
-                                <span><i class="fas fa-users me-1"></i> 2-6 People</span>
-                                <span><i class="fas fa-map-marker-alt me-1"></i> Europe</span>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-primary flex-fill">Book Now</a>
-                                <a href="#" class="btn btn-outline-primary">Details</a>
-                            </div>
-                        </div>
-                    </div>
+                <div id="noFilterResults" class="text-center py-4 d-none">
+                    <p class="text-muted mb-0">No destinations in this region.</p>
                 </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 destination-card-hover">
-                        <div class="position-relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=250&fit=crop&crop=center&auto=format&q=80"
-                                alt="Bali, Indonesia"
-                                class="card-img-top"
-                                style="height: 250px; object-fit: cover" />
-                            <div class="position-absolute top-0 start-0 m-3">
-                                <span class="badge bg-primary fs-6">From $499</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold mb-0">Bali, Indonesia</h5>
-                                <div class="text-warning">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <small class="text-muted ms-1">(4.7)</small>
-                                </div>
-                            </div>
-                            <p class="card-text">
-                                Discover tropical beaches, ancient temples, and rich cultural heritage in this
-                                exotic destination.
-                            </p>
-                            <div class="d-flex justify-content-between text-muted small mb-3">
-                                <span><i class="fas fa-clock me-1"></i> 6 Days</span>
-                                <span><i class="fas fa-users me-1"></i> 2-10 People</span>
-                                <span><i class="fas fa-map-marker-alt me-1"></i> Asia</span>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-primary flex-fill">Book Now</a>
-                                <a href="#" class="btn btn-outline-primary">Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 destination-card-hover">
-                        <div class="position-relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1549144511-f099e773c147?w=400&h=250&fit=crop&crop=center&auto=format&q=80"
-                                alt="Paris, France"
-                                class="card-img-top"
-                                style="height: 250px; object-fit: cover" />
-                            <div class="position-absolute top-0 start-0 m-3">
-                                <span class="badge bg-primary fs-6">From $899</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold mb-0">Paris, France</h5>
-                                <div class="text-warning">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <small class="text-muted ms-1">(4.9)</small>
-                                </div>
-                            </div>
-                            <p class="card-text">
-                                The city of love and lights, featuring iconic landmarks, world-class museums, and
-                                exquisite cuisine.
-                            </p>
-                            <div class="d-flex justify-content-between text-muted small mb-3">
-                                <span><i class="fas fa-clock me-1"></i> 6 Days</span>
-                                <span><i class="fas fa-users me-1"></i> 2-8 People</span>
-                                <span><i class="fas fa-map-marker-alt me-1"></i> Europe</span>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-primary flex-fill">Book Now</a>
-                                <a href="#" class="btn btn-outline-primary">Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 destination-card-hover">
-                        <div class="position-relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=250&fit=crop&crop=center&auto=format&q=80"
-                                alt="Tokyo, Japan"
-                                class="card-img-top"
-                                style="height: 250px; object-fit: cover" />
-                            <div class="position-absolute top-0 start-0 m-3">
-                                <span class="badge bg-primary fs-6">From $1099</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold mb-0">Tokyo, Japan</h5>
-                                <div class="text-warning">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <small class="text-muted ms-1">(4.8)</small>
-                                </div>
-                            </div>
-                            <p class="card-text">
-                                Experience the perfect blend of ancient traditions and cutting-edge technology in
-                                Japan's vibrant capital.
-                            </p>
-                            <div class="d-flex justify-content-between text-muted small mb-3">
-                                <span><i class="fas fa-clock me-1"></i> 8 Days</span>
-                                <span><i class="fas fa-users me-1"></i> 2-6 People</span>
-                                <span><i class="fas fa-map-marker-alt me-1"></i> Asia</span>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-primary flex-fill">Book Now</a>
-                                <a href="#" class="btn btn-outline-primary">Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6">
-                    <div class="card h-100 shadow-sm border-0 destination-card-hover">
-                        <div class="position-relative">
-                            <img
-                                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=250&fit=crop&crop=center&auto=format&q=80"
-                                alt="Dubai, UAE"
-                                class="card-img-top"
-                                style="height: 250px; object-fit: cover" />
-                            <div class="position-absolute top-0 end-0 m-3">
-                                <span class="badge bg-success fs-6">Best Seller</span>
-                            </div>
-                            <div class="position-absolute top-0 start-0 m-3">
-                                <span class="badge bg-primary fs-6">From $749</span>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title fw-bold mb-0">Dubai, UAE</h5>
-                                <div class="text-warning">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <small class="text-muted ms-1">(4.9)</small>
-                                </div>
-                            </div>
-                            <p class="card-text">
-                                Luxury shopping, ultramodern architecture, and desert adventures in this glamorous
-                                Middle Eastern city.
-                            </p>
-                            <div class="d-flex justify-content-between text-muted small mb-3">
-                                <span><i class="fas fa-clock me-1"></i> 5 Days</span>
-                                <span><i class="fas fa-users me-1"></i> 2-8 People</span>
-                                <span><i class="fas fa-map-marker-alt me-1"></i> Asia</span>
-                            </div>
-                            <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-primary flex-fill">Book Now</a>
-                                <a href="#" class="btn btn-outline-primary">Details</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- More Destinations -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold text-primary">More Amazing Places</h2>
-                <p class="lead">Explore our complete collection of destinations</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
-                    <div class="card border-0 shadow-sm destination-card-hover">
-                        <img
-                            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop&crop=center&auto=format&q=80"
-                            class="card-img-top"
-                            style="height: 200px; object-fit: cover"
-                            alt="Maldives" />
-                        <div class="card-body text-center">
-                            <h6 class="card-title fw-bold">Maldives</h6>
-                            <p class="text-muted small mb-2">From $1299</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card border-0 shadow-sm destination-card-hover">
-                        <img
-                            src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop&crop=center&auto=format&q=80"
-                            class="card-img-top"
-                            style="height: 200px; object-fit: cover"
-                            alt="Switzerland" />
-                        <div class="card-body text-center">
-                            <h6 class="card-title fw-bold">Switzerland</h6>
-                            <p class="text-muted small mb-2">From $999</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card border-0 shadow-sm destination-card-hover">
-                        <img
-                            src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=300&h=200&fit=crop&crop=center&auto=format&q=80"
-                            class="card-img-top"
-                            style="height: 200px; object-fit: cover"
-                            alt="New York" />
-                        <div class="card-body text-center">
-                            <h6 class="card-title fw-bold">New York, USA</h6>
-                            <p class="text-muted small mb-2">From $849</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card border-0 shadow-sm destination-card-hover">
-                        <img
-                            src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=200&fit=crop&crop=center&auto=format&q=80"
-                            class="card-img-top"
-                            style="height: 200px; object-fit: cover"
-                            alt="Thailand" />
-                        <div class="card-body text-center">
-                            <h6 class="card-title fw-bold">Thailand</h6>
-                            <p class="text-muted small mb-2">From $649</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card border-0 shadow-sm destination-card-hover">
-                        <img
-                            src="https://images.unsplash.com/photo-1549144511-f099e773c147?w=300&h=200&fit=crop&crop=center&auto=format&q=80"
-                            class="card-img-top"
-                            style="height: 200px; object-fit: cover"
-                            alt="Egypt" />
-                        <div class="card-body text-center">
-                            <h6 class="card-title fw-bold">Egypt</h6>
-                            <p class="text-muted small mb-2">From $699</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card border-0 shadow-sm destination-card-hover">
-                        <img
-                            src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=300&h=200&fit=crop&crop=center&auto=format&q=80"
-                            class="card-img-top"
-                            style="height: 200px; object-fit: cover"
-                            alt="Turkey" />
-                        <div class="card-body text-center">
-                            <h6 class="card-title fw-bold">Turkey</h6>
-                            <p class="text-muted small mb-2">From $549</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card border-0 shadow-sm destination-card-hover">
-                        <img
-                            src="https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=300&h=200&fit=crop&crop=center&auto=format&q=80"
-                            class="card-img-top"
-                            style="height: 200px; object-fit: cover"
-                            alt="Brazil" />
-                        <div class="card-body text-center">
-                            <h6 class="card-title fw-bold">Brazil</h6>
-                            <p class="text-muted small mb-2">From $899</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="card border-0 shadow-sm destination-card-hover">
-                        <img
-                            src="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=300&h=200&fit=crop&crop=center&auto=format&q=80"
-                            class="card-img-top"
-                            style="height: 200px; object-fit: cover"
-                            alt="Australia" />
-                        <div class="card-body text-center">
-                            <h6 class="card-title fw-bold">Australia</h6>
-                            <p class="text-muted small mb-2">From $1199</p>
-                            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-5">
-                <a href="#" class="btn btn-primary btn-lg">Load More Destinations</a>
-            </div>
+            <?php endif; ?>
         </div>
     </section>
 
@@ -441,5 +116,27 @@
         </div>
     </section>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var filters = document.getElementById('regionFilters');
+    if (!filters) return;
+    filters.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-region]');
+        if (!btn) return;
+        filters.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        var region = btn.getAttribute('data-region');
+        var shown = 0;
+        document.querySelectorAll('.destination-item').forEach(function (item) {
+            var match = region === 'all' || item.getAttribute('data-region') === region;
+            item.classList.toggle('d-none', !match);
+            if (match) shown++;
+        });
+        var empty = document.getElementById('noFilterResults');
+        if (empty) empty.classList.toggle('d-none', shown > 0);
+    });
+});
+</script>
 
 <?php include 'includes/footer.php'; ?>

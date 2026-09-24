@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/auth.php';
+require_once 'includes/bookings.php';
 
 $auth = new Auth();
 
@@ -10,6 +11,17 @@ if (!$auth->isLoggedIn()) {
 }
 
 $user = $auth->getCurrentUser();
+
+$bookingsHelper = new Bookings();
+$userBookings = $bookingsHelper->listForUser((int) $user['id']);
+$bookingCount = $bookingsHelper->countForUser((int) $user['id']);
+
+$statusBadges = [
+    'pending' => 'bg-warning text-dark',
+    'confirmed' => 'bg-success',
+    'cancelled' => 'bg-secondary',
+    'completed' => 'bg-primary',
+];
 ?>
 
 <?php include 'includes/header.php'; ?>
@@ -275,12 +287,71 @@ $user = $auth->getCurrentUser();
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="stats-card text-center">
                 <div class="stats-icon gradient-bg-4 text-white mx-auto">
-                    <i class="fas fa-calendar-check"></i>
+                    <i class="fas fa-ticket-alt"></i>
                 </div>
-                <div class="stats-number text-gradient">24/7</div>
-                <div class="stats-label">Support</div>
+                <div class="stats-number text-gradient"><?php echo (int) $bookingCount; ?></div>
+                <div class="stats-label">My Bookings</div>
             </div>
         </div>
+    </div>
+
+    <!-- My Bookings -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="section-title mb-0">My Bookings</h3>
+            <a href="destinations.php" class="btn btn-sm btn-outline-primary">Book a New Trip</a>
+        </div>
+
+        <?php if (!$userBookings): ?>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-luggage-cart fa-2x text-muted mb-3"></i>
+                    <p class="text-muted mb-3">You have no bookings yet.</p>
+                    <a href="destinations.php" class="btn btn-primary">Explore Destinations</a>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="table-responsive card border-0 shadow-sm">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Ref</th>
+                            <th>Destination</th>
+                            <th>Travel Date</th>
+                            <th>Travelers</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($userBookings as $b): ?>
+                            <?php
+                            $badge = $statusBadges[$b['status']] ?? 'bg-secondary';
+                            $canCancel = in_array($b['status'], ['pending', 'confirmed'], true);
+                            ?>
+                            <tr data-booking-id="<?php echo (int) $b['id']; ?>">
+                                <td class="fw-semibold"><?php echo htmlspecialchars($b['booking_ref'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars($b['destination_name'] ?: '—', ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo htmlspecialchars($b['travel_date'] ? date('M j, Y', strtotime($b['travel_date'])) : '—', ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?php echo (int) $b['travelers']; ?></td>
+                                <td>$<?php echo htmlspecialchars(number_format((float) $b['total_amount'], 2), ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><span class="badge <?php echo $badge; ?>"><?php echo htmlspecialchars(ucfirst($b['status']), ENT_QUOTES, 'UTF-8'); ?></span></td>
+                                <td class="text-end">
+                                    <?php if ($canCancel): ?>
+                                        <button type="button" class="btn btn-sm btn-outline-danger cancel-booking-btn" data-id="<?php echo (int) $b['id']; ?>">
+                                            Cancel
+                                        </button>
+                                    <?php else: ?>
+                                        <span class="text-muted small">—</span>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="row">
@@ -546,6 +617,43 @@ $user = $auth->getCurrentUser();
     }
 `;
     document.head.appendChild(style);
+</script>
+
+<script>
+    document.querySelectorAll('.cancel-booking-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var id = this.getAttribute('data-id');
+            if (!confirm('Cancel this booking?')) return;
+
+            this.disabled = true;
+            this.textContent = 'Cancelling...';
+
+            fetch((window.BASE_URL || '') + '/api/cancel_booking.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': window.CSRF_TOKEN || ''
+                },
+                body: JSON.stringify({ booking_id: parseInt(id, 10) })
+            })
+                .then(function (r) { return r.json(); })
+                .then(function (result) {
+                    if (result.success) {
+                        if (window.showToast) showToast('Booking cancelled.', 'success');
+                        setTimeout(function () { window.location.reload(); }, 1000);
+                    } else {
+                        if (window.showToast) showToast(result.message || 'Could not cancel.', 'error');
+                        btn.disabled = false;
+                        btn.textContent = 'Cancel';
+                    }
+                })
+                .catch(function () {
+                    if (window.showToast) showToast('Network error.', 'error');
+                    btn.disabled = false;
+                    btn.textContent = 'Cancel';
+                });
+        });
+    });
 </script>
 
 <?php include 'includes/footer.php'; ?>
