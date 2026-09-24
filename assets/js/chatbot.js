@@ -1,25 +1,21 @@
-const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
-const key = localStorage.getItem('google_api_key') || 'your_api_key';
+const CHATBOT_API = 'api/chatbot.php';
 
 async function fetchAIResponse(prompt) {
-    const requestBody = {
-        contents: {
-            parts: [
-                {
-                    text: `You are a travel assistant. Answer the user's question based on the following information:\n\nSearchable Content:\n${window.searchableContent}\n\nPopular Destinations:\n${window.popularDestinations}\n\nUser Question: ${prompt}\n\nRespond as it's user input language.`
-                }
-            ]
-        }
-    };
-    const response = await fetch(`${url}?key=${key}`, {
+    const response = await fetch(CHATBOT_API, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify({ message: prompt })
     });
-    const data = await response.json();
-    return data.candidates[0].content.parts[0].text;
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Sorry, I cannot answer right now.');
+    }
+
+    return data.reply;
 }
 
 function toggleChatbot() {
@@ -42,15 +38,25 @@ function toggleChatbot() {
     }
 }
 
-// Helper function for typing effect
+// Helper function for typing effect (uses textContent to prevent XSS)
 async function typeText(element, text, chatContainer) {
-    element.innerHTML = ''; // Clear existing content
+    element.textContent = '';
+    let accumulated = '';
     for (let i = 0; i < text.length; i++) {
-        element.innerHTML += text.charAt(i);
-        // Add a slight delay for a typing effect
+        accumulated += text.charAt(i);
+        element.textContent = accumulated;
         await new Promise((resolve) => setTimeout(resolve, 5));
         chatContainer.scrollTop = chatContainer.scrollHeight;
     }
+}
+
+function appendUserMessage(text) {
+    const userMessageBubble = document.createElement('div');
+    userMessageBubble.classList.add('message-bubble', 'message-user');
+    const paragraph = document.createElement('p');
+    paragraph.textContent = text;
+    userMessageBubble.appendChild(paragraph);
+    return userMessageBubble;
 }
 
 function sendMessage(event) {
@@ -61,42 +67,36 @@ function sendMessage(event) {
 
     if (userMessageText === '') return;
 
-    // Add user message to chat history
-    const userMessageBubble = document.createElement('div');
-    userMessageBubble.classList.add('message-bubble', 'message-user');
-    userMessageBubble.innerHTML = `<p>${userMessageText}</p>`;
-    messagesContainer.appendChild(userMessageBubble);
-    // Scroll to bottom
+    messagesContainer.appendChild(appendUserMessage(userMessageText));
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    // Clear input field
     input.value = '';
 
-    // added typing indicator
     const typingIndicator = document.createElement('div');
     typingIndicator.classList.add('message-bubble', 'message-ai');
-    typingIndicator.innerHTML = `<p>Thinking...</p>`;
+    const typingText = document.createElement('p');
+    typingText.textContent = 'Thinking...';
+    typingIndicator.appendChild(typingText);
     messagesContainer.appendChild(typingIndicator);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
     const aiMessageBubble = document.createElement('div');
 
-    // Simple AI response placeholder
     fetchAIResponse(userMessageText)
         .then((aiResponseText) => {
             typingIndicator.remove();
             aiMessageBubble.classList.add('message-bubble', 'message-ai');
-            typeText(aiMessageBubble, aiResponseText, messagesContainer);
             messagesContainer.appendChild(aiMessageBubble);
-
-            // Scroll to bottom
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            return typeText(aiMessageBubble, aiResponseText, messagesContainer);
         })
         .catch((error) => {
-            typeText(aiMessageBubble, error.message || "I'm sorry, I can't answer that question.", messagesContainer);
             typingIndicator.remove();
+            aiMessageBubble.classList.add('message-bubble', 'message-ai');
+            const errorText = document.createElement('p');
+            errorText.textContent = error.message || "I'm sorry, I can't answer that question.";
+            aiMessageBubble.appendChild(errorText);
+            messagesContainer.appendChild(aiMessageBubble);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
-
-    // Scroll to bottom
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 document.querySelector('.chatbot-input-container').addEventListener('submit', sendMessage);
