@@ -115,6 +115,34 @@ Copy `.env.example` to `.env`. **Never commit `.env`.**
 
 Real server environment variables always override values in `.env`.
 
+## GitHub Actions deployment (InfinityFree)
+
+On every push to `main`, the workflow `.github/workflows/deploy.yml`:
+
+1. Checks out the repository
+2. **Generates a temporary `.env` from GitHub Actions secrets** (never committed)
+3. Uploads the project (including `.env`) to `ftpupload.net:/htdocs/`
+4. **Deletes the temporary `.env`** from the CI workspace
+
+### Required GitHub secrets
+
+Repository → **Settings → Secrets and variables → Actions → New repository secret**
+
+| Secret | Example / source |
+|--------|------------------|
+| `FTP_SERVER` | `ftpupload.net` |
+| `FTP_USERNAME` | `if0_XXXXXXXX` (panel → FTP Details) |
+| `FTP_PASSWORD` | Hosting account password |
+| `APP_URL` | `https://your-site.infinityfreeapp.com` |
+| `DB_HOST` | `sql.infinityfree.com` |
+| `DB_NAME` | `if0_XXXXXXXX_dbname` |
+| `DB_USER` | `if0_XXXXXXXX_user` |
+| `DB_PASS` | MySQL user password |
+| `GROQ_API_KEY` | Key from [console.groq.com/keys](https://console.groq.com/keys) |
+| `GROQ_MODEL` | `llama-3.1-8b-instant` |
+
+`.env` is git-ignored and **must never be committed**. Only GitHub stores these values.
+
 ## Groq Chatbot Configuration
 
 1. Create an account at [console.groq.com](https://console.groq.com/keys) and generate a free API key.
@@ -130,7 +158,12 @@ Real server environment variables always override values in `.env`.
 
 ## Database Setup
 
-Schema (created by `config/init_database.php` when `APP_ENV=local`):
+**Production:** import `database.sql` once via phpMyAdmin (or MySQL client). It creates all tables and seed destinations.
+
+**Local development (optional):** with `APP_ENV=local`, open `config/init_database.php` to create only the legacy `users` table.
+
+<details>
+<summary>Legacy users-only schema (init_database.php)</summary>
 
 ```sql
 CREATE TABLE users (
@@ -146,32 +179,35 @@ CREATE TABLE users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```
 
+</details>
+
 Passwords are stored with `password_hash()` (bcrypt).
 
 ## Deployment Steps
 
-1. Push the project to your Git repository.
-2. Create a MySQL database and user on your host.
-3. Deploy the code (Git integration, FTP, or file manager).
-4. Add environment variables (see platform table above) or upload `.env`.
-5. Set `APP_ENV=production` and `APP_DEBUG=false`.
-6. Set `APP_URL` to your live URL (no trailing slash), e.g. `https://your-domain.com`.
-7. Run database initialization once (local only), or import the SQL schema manually.
-8. Ensure the web root points at the project folder (where `index.php` lives).
-9. Verify: homepage, register, login, dashboard, chatbot.
+1. Push to `main` — GitHub Actions generates `.env` from secrets and deploys via FTP.
+2. Import `database.sql` once (phpMyAdmin on your host).
+3. Confirm all GitHub secrets are set (table above).
+4. Verify: homepage, register, login, dashboard, chatbot.
 
 ### Shared hosting checklist (cPanel / Hostinger)
 
 - [ ] PHP 8.1+ selected
 - [ ] `pdo_mysql` and `curl` enabled
-- [ ] `.env` uploaded (or env vars set in panel)
-- [ ] Database created and user attached
+- [ ] Database created and user attached; `database.sql` imported
 - [ ] `.htaccess` present in web root
-- [ ] `APP_ENV=production`
+- [ ] GitHub secrets configured (or `.env` uploaded manually)
 
 ## InfinityFree production setup
 
-GitHub Actions deploys Git-tracked files to `/htdocs/` (workflow: `.github/workflows/deploy.yml`). `.env` is **not** deployed — you must add it on the server.
+GitHub Actions deploys Git-tracked files to `/htdocs/` and **creates `.env` on the server during deploy** from repository secrets (see “GitHub Actions deployment” above). You do not need to upload `.env` manually when using CI.
+
+Manual fallback:
+
+1. vPanel → File Manager → `htdocs/` → upload `.env` (from `.env.example` filled in).
+2. Or vPanel → **Setup PHP Environment Variables**.
+
+`.htaccess` blocks web access to `.env`.
 
 ### 1. Place `.env` on InfinityFree
 
@@ -198,26 +234,11 @@ GitHub Actions deploys Git-tracked files to `/htdocs/` (workflow: `.github/workf
 
 Optional: `DB_CHARSET` (default `utf8mb4`).
 
-### 3. Create the database + `users` table
+### 3. Create the database
 
 1. vPanel → **MySQL Databases**: create database + user, attach user to DB.
-2. Import this SQL (phpMyAdmin or the DB tools):
-
-```sql
-CREATE TABLE users (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    address TEXT,
-    phone VARCHAR(20),
-    birthdate DATE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-```
-
-`config/init_database.php` is **blocked** when `APP_ENV=production` — run the SQL above manually instead.
+2. Import **`database.sql`** via phpMyAdmin (all tables + seed destinations).
+3. `config/init_database.php` is **blocked** when `APP_ENV=production` — always use `database.sql` in production.
 
 ### 4. Verify after deploy
 

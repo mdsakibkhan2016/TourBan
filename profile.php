@@ -231,10 +231,11 @@ $user = $auth->getCurrentUser();
 
         // Make API call to update profile
         fetch((window.BASE_URL || '') + '/api/update_profile.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': window.CSRF_TOKEN || ''
+            },
                 body: JSON.stringify(data)
             })
             .then(response => response.json())

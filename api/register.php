@@ -9,6 +9,7 @@ header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/security.php';
 
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -16,6 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Method not allowed']);
     exit;
 }
+
+require_csrf();
 
 try {
     // Get JSON input

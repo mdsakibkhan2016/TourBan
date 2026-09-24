@@ -71,6 +71,8 @@ class Auth
                 if (password_verify($password, $user['password'])) {
                     // Start session if not already started
                     secure_session_start();
+                    // Prevent session fixation
+                    session_regenerate_id(true);
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['user_name'] = $user['name'];
                     $_SESSION['user_email'] = $user['email'];

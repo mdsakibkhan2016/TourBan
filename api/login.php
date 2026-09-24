@@ -9,12 +9,20 @@ header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/security.php';
 
 // Only allow POST requests
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     echo json_encode(['success' => false, 'message' => 'Method not allowed']);
     exit;
+}
+
+require_csrf();
+
+// Throttle brute-force attempts (5 failures / 5 minutes per session)
+if (!login_rate_limit_check()) {
+    json_error(429, 'Too many login attempts. Please wait a few minutes and try again.');
 }
 
 try {
@@ -56,6 +64,8 @@ try {
     $result = $auth->login($email, $password);
 
     if ($result['success']) {
+        login_rate_limit_reset();
+
         // Set remember me cookie if requested
         if ($rememberMe) {
             $cookieValue = base64_encode($email . '|' . time());
@@ -65,6 +75,7 @@ try {
         http_response_code(200);
         echo json_encode($result);
     } else {
+        login_rate_limit_fail();
         http_response_code(401);
         echo json_encode($result);
     }

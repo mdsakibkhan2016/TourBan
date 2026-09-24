@@ -15,6 +15,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Create production .env from GitHub Secrets
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASS: ${{ secrets.DB_PASS }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_MODEL: ${{ secrets.GROQ_MODEL }}
+        run: |
+          set -euo pipefail
+          umask 077
+          {
+            echo "APP_ENV=production"
+            echo "APP_DEBUG=false"
+            echo "APP_URL=${APP_URL}"
+            echo "DB_HOST=${DB_HOST}"
+            echo "DB_NAME=${DB_NAME}"
+            echo "DB_USER=${DB_USER}"
+            echo "DB_PASS=${DB_PASS}"
+            echo "GROQ_API_KEY=${GROQ_API_KEY}"
+            echo "GROQ_MODEL=${GROQ_MODEL:-llama-3.1-8b-instant}"
+          } > .env
+          echo "Created temporary .env ($(wc -c < .env) bytes)"
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
@@ -30,11 +55,16 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
-            .env
-            .env.*
+            .env.example
             **/.vscode/**
             **/.idea/**
             **/logs/**
             **/*.log
             **/temporary/**
             **/temp/**
+
+      - name: Remove temporary .env from workspace
+        if: always()
+        run: |
+          rm -f .env
+          echo "Temporary .env removed"

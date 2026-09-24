@@ -4,7 +4,8 @@ async function fetchAIResponse(prompt) {
     const response = await fetch(CHATBOT_API, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': window.CSRF_TOKEN || ''
         },
         body: JSON.stringify({ message: prompt })
     });

@@ -10,6 +10,7 @@ header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../config/env.php';
+require_once __DIR__ . '/../includes/security.php';
 
 // Same-origin only
 $origin = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -27,6 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'message' => 'Method not allowed']);
     exit;
 }
+
+require_csrf();
 
 $apiKey = env('GROQ_API_KEY');
 if (!$apiKey || $apiKey === 'your_groq_api_key_here') {

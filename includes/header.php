@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/env.php';
+require_once __DIR__ . '/../includes/security.php';
 
 // Start session with secure cookie settings
 secure_session_start();
@@ -7,6 +8,7 @@ secure_session_start();
 $isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
 $base = BASE_URL;
+$csrfToken = csrf_token();
 ?>
 <!DOCTYPE html>
 <html lang="bn">
@@ -111,6 +113,7 @@ $base = BASE_URL;
     <!-- Logout JavaScript Function -->
     <script>
         window.BASE_URL = <?php echo json_encode($base, JSON_UNESCAPED_SLASHES); ?>;
+        window.CSRF_TOKEN = <?php echo json_encode($csrfToken); ?>;
 
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
@@ -118,6 +121,7 @@ $base = BASE_URL;
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            'X-CSRF-Token': window.CSRF_TOKEN || ''
                         }
                     })
                     .then(response => response.json())
