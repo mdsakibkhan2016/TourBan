@@ -7,7 +7,7 @@ A tourism and travel booking website built with PHP, MySQL, and Bootstrap 5.
 - Homepage with hero section and smart search
 - Destinations catalog, services, about, and contact pages
 - User registration, login, session-based dashboard, and profile editing
-- AI travel chatbot powered by xAI Grok (server-side API proxy)
+- AI travel chatbot powered by Groq Cloud (server-side API proxy)
 
 ## Tech Stack
 
@@ -16,7 +16,7 @@ A tourism and travel booking website built with PHP, MySQL, and Bootstrap 5.
 | Backend | PHP 8.1+ (PDO, sessions) |
 | Database | MySQL 8 / MariaDB 10.4+ |
 | Frontend | HTML5, CSS3, JavaScript (ES6), Bootstrap 5 |
-| AI | xAI Grok API (`https://api.x.ai/v1`) |
+| AI | Groq Cloud API (`https://api.groq.com/openai/v1/chat/completions`) |
 | Icons / Fonts | Font Awesome, Google Fonts (CDN) |
 
 ## Project Structure
@@ -40,7 +40,7 @@ TourBan/
 - PHP 8.1 or newer with `pdo_mysql` and `curl` extensions
 - MySQL 8 or MariaDB 10.4+
 - Apache with `mod_rewrite` (or Nginx with equivalent rules)
-- An xAI account and API key for the chatbot (optional but recommended)
+- A [Groq Cloud](https://console.groq.com/keys) API key for the chatbot (optional but recommended)
 
 ## Installation (Local Development)
 
@@ -97,9 +97,8 @@ Copy `.env.example` to `.env`. **Never commit `.env`.**
 | `DB_USER` | Yes | Database username |
 | `DB_PASS` | Yes | Database password |
 | `DB_CHARSET` | No | Default `utf8mb4` |
-| `XAI_API_KEY` | Chatbot | Your xAI Grok API key from [console.x.ai](https://console.x.ai) |
-| `XAI_MODEL` | No | Default `grok-2-latest` |
-| `XAI_API_BASE` | No | Default `https://api.x.ai/v1` |
+| `GROQ_API_KEY` | Chatbot | Your Groq API key from [console.groq.com/keys](https://console.groq.com/keys) |
+| `GROQ_MODEL` | No | Default `llama-3.1-8b-instant` |
 
 ### Where to set environment variables by platform
 
@@ -116,18 +115,18 @@ Copy `.env.example` to `.env`. **Never commit `.env`.**
 
 Real server environment variables always override values in `.env`.
 
-## Grok Chatbot Configuration
+## Groq Chatbot Configuration
 
-1. Create an account at [console.x.ai](https://console.x.ai) and generate an API key.
+1. Create an account at [console.groq.com](https://console.groq.com/keys) and generate a free API key.
 2. Set it in `.env` (local) or your hosting environment panel (production):
 
    ```env
-   XAI_API_KEY=xai-your-real-key
-   XAI_MODEL=grok-2-latest
-   XAI_API_BASE=https://api.x.ai/v1
+   GROQ_API_KEY=gsk_your_real_key
+   GROQ_MODEL=llama-3.1-8b-instant
    ```
 
-3. The browser only calls `api/chatbot.php`. The PHP endpoint reads `XAI_API_KEY` server-side and calls the official xAI API. **The key is never sent to the client.**
+3. The browser only calls `api/chatbot.php`. The PHP endpoint reads `GROQ_API_KEY` server-side and calls `https://api.groq.com/openai/v1/chat/completions`. **The key is never sent to the client.**
+4. If `GROQ_API_KEY` is missing, the API returns HTTP 503: `AI assistant is not configured.`
 
 ## Database Setup
 
@@ -194,9 +193,10 @@ GitHub Actions deploys Git-tracked files to `/htdocs/` (workflow: `.github/workf
 | `DB_NAME` | Yes | e.g. `if0_12345678_tourban_db` |
 | `DB_USER` | Yes | e.g. `if0_12345678_admin` |
 | `DB_PASS` | Yes | MySQL user password from vPanel (not your account password) |
-| `XAI_API_KEY` | Chatbot | Grok key from console.x.ai — leave empty to get the friendly “not configured” error |
+| `GROQ_API_KEY` | Chatbot | Groq key from [console.groq.com/keys](https://console.groq.com/keys) — leave empty to get the friendly “not configured” error |
+| `GROQ_MODEL` | No | `llama-3.1-8b-instant` (default) |
 
-Optional: `XAI_MODEL` (default `grok-2-latest`), `XAI_API_BASE` (default `https://api.x.ai/v1`), `DB_CHARSET` (default `utf8mb4`).
+Optional: `DB_CHARSET` (default `utf8mb4`).
 
 ### 3. Create the database + `users` table
 
@@ -224,7 +224,7 @@ CREATE TABLE users (
 - [ ] Homepage: CSS/fonts/images load (no unstyled page)
 - [ ] Register → new row in `users`
 - [ ] Login → dashboard shows user name
-- [ ] Chatbot without `XAI_API_KEY` → “AI assistant is not configured…” (HTTP 503), not a blank failure
+- [ ] Chatbot without `GROQ_API_KEY` → “AI assistant is not configured.” (HTTP 503), not a blank failure
 - [ ] Chatbot with key set → real replies
 
 ## Security Notes

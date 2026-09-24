@@ -4,6 +4,8 @@
  * Environment configuration loader
  * Loads .env file values and provides the env() helper.
  * Never commit the real .env file.
+ *
+ * Chatbot (Groq Cloud): GROQ_API_KEY (required), GROQ_MODEL (optional).
  */
 
 if (!function_exists('env')) {

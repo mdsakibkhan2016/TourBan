@@ -2,7 +2,7 @@
 
 /**
  * Chatbot API Endpoint
- * Proxies chat requests to the xAI Grok API.
+ * Proxies chat requests to the Groq Cloud API (OpenAI-compatible).
  * The API key stays on the server and is never exposed to the browser.
  */
 
@@ -28,12 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$apiKey = env('XAI_API_KEY');
-if (!$apiKey || $apiKey === 'your_grok_api_key_here') {
+$apiKey = env('GROQ_API_KEY');
+if (!$apiKey || $apiKey === 'your_groq_api_key_here') {
     http_response_code(503);
     echo json_encode([
         'success' => false,
-        'message' => 'AI assistant is not configured. Set XAI_API_KEY on the server.'
+        'message' => 'AI assistant is not configured.'
     ]);
     exit;
 }
@@ -61,8 +61,8 @@ try {
         exit;
     }
 
-    $apiBase = rtrim((string) env('XAI_API_BASE', 'https://api.x.ai/v1'), '/');
-    $model = env('XAI_MODEL', 'grok-2-latest');
+    $model = env('GROQ_MODEL', 'llama-3.1-8b-instant');
+    $endpoint = 'https://api.groq.com/openai/v1/chat/completions';
 
     $systemPrompt = 'You are TourBan, a friendly travel assistant for the TourBan tourism website. '
         . 'Help users with destinations (Rome, Santorini, Bali, Paris, Tokyo, etc.), tours, hotels, '
@@ -79,7 +79,7 @@ try {
         'max_tokens' => 1024,
     ];
 
-    $ch = curl_init($apiBase . '/chat/completions');
+    $ch = curl_init($endpoint);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
@@ -94,20 +94,42 @@ try {
 
     $response = curl_exec($ch);
     $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlErrno = curl_errno($ch);
     $curlError = curl_error($ch);
     curl_close($ch);
 
     if ($response === false) {
-        error_log('[TourBan] Grok API curl error: ' . $curlError);
-        http_response_code(502);
-        echo json_encode(['success' => false, 'message' => 'Unable to reach the AI service. Please try again.']);
+        error_log('[TourBan] Groq API curl error: ' . $curlError);
+
+        if ($curlErrno === CURLE_OPERATION_TIMEOUTED || $curlErrno === CURLE_COULDNT_CONNECT) {
+            http_response_code(504);
+            echo json_encode(['success' => false, 'message' => 'The AI service timed out. Please try again.']);
+        } else {
+            http_response_code(502);
+            echo json_encode(['success' => false, 'message' => 'Unable to reach the AI service. Please try again.']);
+        }
         exit;
     }
 
     $data = json_decode($response, true);
 
+    if ($httpCode === 401 || $httpCode === 403) {
+        // Invalid/revoked key — never echo the key or raw auth body to the client.
+        error_log('[TourBan] Groq API auth failed (HTTP ' . $httpCode . ')');
+        http_response_code(502);
+        echo json_encode(['success' => false, 'message' => 'AI assistant authentication failed. Please contact the site admin.']);
+        exit;
+    }
+
+    if ($httpCode === 429) {
+        error_log('[TourBan] Groq API rate limited (HTTP 429)');
+        http_response_code(429);
+        echo json_encode(['success' => false, 'message' => 'The AI assistant is busy right now. Please try again in a moment.']);
+        exit;
+    }
+
     if ($httpCode < 200 || $httpCode >= 300) {
-        error_log('[TourBan] Grok API HTTP ' . $httpCode . ': ' . $response);
+        error_log('[TourBan] Groq API HTTP ' . $httpCode);
         http_response_code(502);
         echo json_encode(['success' => false, 'message' => 'AI service returned an error. Please try again.']);
         exit;
@@ -118,7 +140,7 @@ try {
         ?? null;
 
     if (!$reply) {
-        error_log('[TourBan] Grok API unexpected response: ' . $response);
+        error_log('[TourBan] Groq API unexpected response shape');
         http_response_code(502);
         echo json_encode(['success' => false, 'message' => 'Unexpected AI response. Please try again.']);
         exit;
