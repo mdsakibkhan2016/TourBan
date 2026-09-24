@@ -230,7 +230,7 @@ $user = $auth->getCurrentUser();
         button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
 
         // Make API call to update profile
-        fetch('api/update_profile.php', {
+        fetch((window.BASE_URL || '') + '/api/update_profile.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

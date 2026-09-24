@@ -27,13 +27,14 @@ jobs:
           timeout: 180000
           log-level: standard
           exclude: |
-            .git
-            .github
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
             .env
             .env.*
-            node_modules
-            logs
-            temporary
-            temp
-            .vscode
-            .idea
+            **/.vscode/**
+            **/.idea/**
+            **/logs/**
+            **/*.log
+            **/temporary/**
+            **/temp/**

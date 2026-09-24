@@ -12,10 +12,12 @@ Options -Indexes
 </FilesMatch>
 
 # Block direct web access to config directory and internal files
-RewriteEngine On
-RewriteRule ^config(/|$) - [F,L,NC]
-RewriteRule ^\.env - [F,L,NC]
-RewriteRule ^\.git - [F,L,NC]
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^config(/|$) - [F,L,NC]
+    RewriteRule ^\.env - [F,L,NC]
+    RewriteRule ^\.git - [F,L,NC]
+</IfModule>
 
 # Security headers
 <IfModule mod_headers.c>

@@ -78,7 +78,29 @@ load_env_file(dirname(__DIR__) . '/.env');
 // Base URL for the app (no trailing slash). Empty string = domain root.
 // Example: https://example.com  or  https://example.com/tourban
 if (!defined('BASE_URL')) {
-    define('BASE_URL', rtrim((string) env('APP_URL', ''), '/'));
+    $configuredUrl = rtrim((string) env('APP_URL', ''), '/');
+
+    if ($configuredUrl !== '') {
+        define('BASE_URL', $configuredUrl);
+    } else {
+        // Production fallback: derive from the current request so assets and
+        // navigation links work even when APP_URL is not set.
+        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        define('BASE_URL', $host !== '' ? ($https ? 'https' : 'http') . '://' . $host : '');
+    }
+}
+
+/**
+ * Build a URL for a local asset (CSS/JS/image/API) that works at the domain
+ * root or under a subdirectory.
+ */
+if (!function_exists('asset')) {
+    function asset(string $path): string
+    {
+        return BASE_URL . '/' . ltrim($path, '/');
+    }
 }
 
 // Display detailed errors only when explicitly enabled.

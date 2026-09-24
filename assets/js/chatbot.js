@@ -1,4 +1,4 @@
-const CHATBOT_API = 'api/chatbot.php';
+const CHATBOT_API = (window.BASE_URL || '') + '/api/chatbot.php';
 
 async function fetchAIResponse(prompt) {
     const response = await fetch(CHATBOT_API, {

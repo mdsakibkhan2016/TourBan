@@ -56,7 +56,7 @@ function handleFormSubmit(event) {
     setLoadingState(submitButton, true);
 
     // Make API call to login endpoint
-    fetch('api/login.php', {
+    fetch((window.BASE_URL || '') + '/api/login.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

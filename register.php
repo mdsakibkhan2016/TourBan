@@ -76,4 +76,4 @@ include 'includes/header.php';
 <?php include 'includes/footer.php'; ?>
 
 <!-- Registration JavaScript -->
-<script src="assets/js/registration.js"></script>
+<script src="<?php echo htmlspecialchars(asset('assets/js/registration.js'), ENT_QUOTES, 'UTF-8'); ?>"></script>

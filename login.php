@@ -73,4 +73,4 @@ include 'includes/header.php';
 <?php include 'includes/footer.php'; ?>
 
 <!-- Login JavaScript -->
-<script src="assets/js/login.js"></script>
+<script src="<?php echo htmlspecialchars(asset('assets/js/login.js'), ENT_QUOTES, 'UTF-8'); ?>"></script>

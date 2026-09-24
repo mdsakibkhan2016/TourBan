@@ -170,6 +170,63 @@ Passwords are stored with `password_hash()` (bcrypt).
 - [ ] `.htaccess` present in web root
 - [ ] `APP_ENV=production`
 
+## InfinityFree production setup
+
+GitHub Actions deploys Git-tracked files to `/htdocs/` (workflow: `.github/workflows/deploy.yml`). `.env` is **not** deployed — you must add it on the server.
+
+### 1. Place `.env` on InfinityFree
+
+1. Create the file locally from `.env.example` (do not commit it).
+2. In InfinityFree **vPanel → File Manager**, open `htdocs/` (same folder as `index.php`).
+3. Upload/`.env` there so the path is `htdocs/.env`.
+4. Alternative: vPanel → **Setup PHP Environment Variables** and add the same keys (server env vars override `.env`).
+
+`.htaccess` blocks web access to `.env`.
+
+### 2. Required environment variables
+
+| Variable | Required | Example / notes |
+|----------|----------|-----------------|
+| `APP_URL` | Prod | `https://your-site.infinityfreeapp.com` (no trailing slash). Used for CSS/JS/image links and navigation. |
+| `APP_ENV` | Yes | `production` |
+| `APP_DEBUG` | Yes | `false` |
+| `DB_HOST` | Yes | `sql.infinityfree.com` (check vPanel → MySQL Databases) |
+| `DB_NAME` | Yes | e.g. `if0_12345678_tourban_db` |
+| `DB_USER` | Yes | e.g. `if0_12345678_admin` |
+| `DB_PASS` | Yes | MySQL user password from vPanel (not your account password) |
+| `XAI_API_KEY` | Chatbot | Grok key from console.x.ai — leave empty to get the friendly “not configured” error |
+
+Optional: `XAI_MODEL` (default `grok-2-latest`), `XAI_API_BASE` (default `https://api.x.ai/v1`), `DB_CHARSET` (default `utf8mb4`).
+
+### 3. Create the database + `users` table
+
+1. vPanel → **MySQL Databases**: create database + user, attach user to DB.
+2. Import this SQL (phpMyAdmin or the DB tools):
+
+```sql
+CREATE TABLE users (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    address TEXT,
+    phone VARCHAR(20),
+    birthdate DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
+
+`config/init_database.php` is **blocked** when `APP_ENV=production` — run the SQL above manually instead.
+
+### 4. Verify after deploy
+
+- [ ] Homepage: CSS/fonts/images load (no unstyled page)
+- [ ] Register → new row in `users`
+- [ ] Login → dashboard shows user name
+- [ ] Chatbot without `XAI_API_KEY` → “AI assistant is not configured…” (HTTP 503), not a blank failure
+- [ ] Chatbot with key set → real replies
+
 ## Security Notes
 
 - `.env` is git-ignored and blocked by `.htaccess`

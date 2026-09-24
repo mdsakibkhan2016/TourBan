@@ -21,13 +21,13 @@
 <div id="modal-overlay" class="modal-overlay" onclick="toggleChatbot()"></div>
 
 <!--Chatbot End-->
-<script src="assets/js/chatbot.js" defer></script>
+<script src="<?php echo htmlspecialchars(asset('assets/js/chatbot.js'), ENT_QUOTES, 'UTF-8'); ?>" defer></script>
 <!--Chatbot Start-->
 
 <div class="chatbot-widget-container">
     <!-- Chat Icon -->
     <div class="chatbot-icon" onclick="toggleChatbot()">
-        <img src="./assets/images/chat-bot.png" alt="AI Assistant" class="chatbot-avatar" />
+        <img src="<?php echo htmlspecialchars(asset('assets/images/chat-bot.png'), ENT_QUOTES, 'UTF-8'); ?>" alt="AI Assistant" class="chatbot-avatar" />
         <span class="chatbot-status-online"></span>
     </div>
 </div>

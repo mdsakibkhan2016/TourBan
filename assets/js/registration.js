@@ -49,7 +49,7 @@ function handleFormSubmit(event) {
     submitButton.disabled = true;
 
     // Make API call to registration endpoint
-    fetch('api/register.php', {
+    fetch((window.BASE_URL || '') + '/api/register.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

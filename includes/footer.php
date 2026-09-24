@@ -95,7 +95,7 @@ include 'chatbot.php';
     crossorigin="anonymous"></script>
 
 <!-- Custom Scripts -->
-<script src="assets/js/herosection.js"></script>
+<script src="<?php echo htmlspecialchars(asset('assets/js/herosection.js'), ENT_QUOTES, 'UTF-8'); ?>"></script>
 </body>
 
 </html>

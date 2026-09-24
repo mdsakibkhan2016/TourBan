@@ -33,11 +33,11 @@ $base = BASE_URL;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="stylesheet" href="assets/css/footer.css" />
-    <link rel="stylesheet" href="assets/css/chatbot.css" />
-    <link rel="stylesheet" href="assets/css/registration.css" />
-    <link rel="stylesheet" href="assets/css/login.css" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/main.css'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/footer.css'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/chatbot.css'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/registration.css'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/login.css'), ENT_QUOTES, 'UTF-8'); ?>" />
 </head>
 
 <body>
@@ -46,7 +46,7 @@ $base = BASE_URL;
         <div class="container">
             <a class="navbar-brand" href="<?php echo htmlspecialchars($base ?: '/', ENT_QUOTES, 'UTF-8'); ?>">
                 <img
-                    src="assets/images/logo.png"
+                    src="<?php echo htmlspecialchars(asset('assets/images/logo.png'), ENT_QUOTES, 'UTF-8'); ?>"
                     alt="Tourist Logo"
                     height="50"
                     class="d-inline-block align-text-top" />
@@ -114,7 +114,7 @@ $base = BASE_URL;
 
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
-                fetch('api/logout.php', {
+                fetch((window.BASE_URL || '') + '/api/logout.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
