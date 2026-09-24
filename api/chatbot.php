@@ -31,16 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_csrf();
 
-$apiKey = env('GROQ_API_KEY');
-if (!$apiKey || $apiKey === 'your_groq_api_key_here') {
-    http_response_code(503);
-    echo json_encode([
-        'success' => false,
-        'message' => 'AI assistant is not configured.'
-    ]);
-    exit;
-}
-
 try {
     $input = json_decode(file_get_contents('php://input'), true);
 
@@ -64,20 +54,85 @@ try {
         exit;
     }
 
+    // Optional conversation history (sanitized, capped).
+    $history = [];
+    if (isset($input['history'])) {
+        if (!is_array($input['history'])) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'message' => 'History must be an array']);
+            exit;
+        }
+
+        foreach ($input['history'] as $item) {
+            if (!is_array($item)) {
+                continue;
+            }
+            $role = $item['role'] ?? '';
+            $content = $item['content'] ?? '';
+            if (!in_array($role, ['user', 'assistant'], true) || !is_string($content)) {
+                continue;
+            }
+            $content = trim($content);
+            if ($content === '') {
+                continue;
+            }
+            if (mb_strlen($content) > 2000) {
+                $content = mb_substr($content, 0, 2000);
+            }
+            $history[] = ['role' => $role, 'content' => $content];
+        }
+
+        // Keep only the most recent turns to bound token usage.
+        if (count($history) > 10) {
+            $history = array_slice($history, -10);
+        }
+    }
+
+    $apiKey = env('GROQ_API_KEY');
+    if (!$apiKey || $apiKey === 'your_groq_api_key_here') {
+        http_response_code(503);
+        echo json_encode([
+            'success' => false,
+            'message' => 'AI assistant is not configured.'
+        ]);
+        exit;
+    }
+
     $model = env('GROQ_MODEL', 'llama-3.1-8b-instant');
     $endpoint = 'https://api.groq.com/openai/v1/chat/completions';
 
-    $systemPrompt = 'You are TourBan, a friendly travel assistant for the TourBan tourism website. '
-        . 'Help users with destinations (Rome, Santorini, Bali, Paris, Tokyo, etc.), tours, hotels, '
-        . 'travel guides, transportation, adventure tours, and event planning. '
-        . 'Be concise and helpful. Respond in the same language as the user.';
+    $systemPrompt = 'You are TourBan Travel Assistant, the official AI concierge of TourBan, '
+        . 'a modern tourism and travel booking platform.\n\n'
+        . 'Your role:\n'
+        . '- Advise travelers on destinations, itineraries, best travel seasons, budgets, flights, '
+        . 'hotels, local transport, visas, safety, and cultural tips.\n'
+        . '- TourBan featured destinations: Rome (Italy, 7 days, from $599), Santorini (Greece, 5 days, '
+        . 'from $799), Bali (Indonesia, 6 days, from $499), Paris (France, from $899), Tokyo (Japan, '
+        . 'from $1099), Maldives (from $1299).\n'
+        . '- When a user wants to book, tell them to pick their destination on the Destinations page and '
+        . 'complete the booking form (they must sign in first). Bookings are confirmed instantly with a '
+        . 'reference code starting with TB-.\n'
+        . '- Recommend browsing Destinations for the full catalog and Contact us for custom or group trips.\n\n'
+        . 'Style:\n'
+        . '- Be warm, concise, and practical; answer in the same language as the user.\n'
+        . '- Prefer short paragraphs and simple lists; suggest 2-3 concrete options when possible.\n'
+        . '- Never invent prices or availability beyond the figures above; say "check the Destinations '
+        . 'page for current pricing" otherwise.\n'
+        . '- You cannot access the user\'s account, payments, or bookings. For booking status questions, '
+        . 'direct them to their dashboard.\n'
+        . '- Stay on travel and tourism topics; politely decline unrelated or harmful requests.';
+
+    $messages = [
+        ['role' => 'system', 'content' => $systemPrompt],
+    ];
+    foreach ($history as $h) {
+        $messages[] = $h;
+    }
+    $messages[] = ['role' => 'user', 'content' => $message];
 
     $payload = [
         'model' => $model,
-        'messages' => [
-            ['role' => 'system', 'content' => $systemPrompt],
-            ['role' => 'user', 'content' => $message],
-        ],
+        'messages' => $messages,
         'temperature' => 0.7,
         'max_tokens' => 1024,
     ];

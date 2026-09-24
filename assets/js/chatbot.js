@@ -1,4 +1,7 @@
 const CHATBOT_API = (window.BASE_URL || '') + '/api/chatbot.php';
+const CHATBOT_HISTORY_LIMIT = 10;
+
+let chatbotHistory = [];
 
 async function fetchAIResponse(prompt) {
     const response = await fetch(CHATBOT_API, {
@@ -7,7 +10,10 @@ async function fetchAIResponse(prompt) {
             'Content-Type': 'application/json',
             'X-CSRF-Token': window.CSRF_TOKEN || ''
         },
-        body: JSON.stringify({ message: prompt })
+        body: JSON.stringify({
+            message: prompt,
+            history: chatbotHistory.slice(-CHATBOT_HISTORY_LIMIT)
+        })
     });
 
     const data = await response.json().catch(() => ({}));
@@ -17,6 +23,13 @@ async function fetchAIResponse(prompt) {
     }
 
     return data.reply;
+}
+
+function recordHistory(role, content) {
+    chatbotHistory.push({ role, content });
+    if (chatbotHistory.length > CHATBOT_HISTORY_LIMIT * 2) {
+        chatbotHistory = chatbotHistory.slice(-CHATBOT_HISTORY_LIMIT * 2);
+    }
 }
 
 function toggleChatbot() {
@@ -68,6 +81,7 @@ function sendMessage(event) {
 
     if (userMessageText === '') return;
 
+    recordHistory('user', userMessageText);
     messagesContainer.appendChild(appendUserMessage(userMessageText));
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
     input.value = '';
@@ -84,6 +98,7 @@ function sendMessage(event) {
 
     fetchAIResponse(userMessageText)
         .then((aiResponseText) => {
+            recordHistory('assistant', aiResponseText);
             typingIndicator.remove();
             aiMessageBubble.classList.add('message-bubble', 'message-ai');
             messagesContainer.appendChild(aiMessageBubble);
