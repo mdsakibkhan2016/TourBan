@@ -60,11 +60,14 @@ function handleFormSubmit(event) {
         .then((response) => response.json())
         .then((result) => {
             if (result.success) {
-                alert('Account created successfully! Redirecting to login...');
                 form.reset();
-                // Redirect to login page
+                var target = (window.BASE_URL || '') + '/verify.php';
+                if (result.email) {
+                    target += '?email=' + encodeURIComponent(result.email);
+                }
+                alert(result.message || 'Account created. Please verify your email.');
                 setTimeout(() => {
-                    window.location.href = (window.BASE_URL || '') + '/login.php';
+                    window.location.href = target;
                 }, 1000);
             } else {
                 alert(result.message || 'Registration failed. Please try again.');

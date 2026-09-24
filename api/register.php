@@ -67,8 +67,30 @@ try {
     $result = $auth->register($name, $email, $password, $address);
 
     if ($result['success']) {
+        // Generate OTP + email verification (non-fatal if mail transport fails)
+        $userId = (int) ($result['user_id'] ?? 0);
+        $otp = $userId > 0 ? $auth->createOtp($userId, $email, 'registration') : null;
+
+        $emailSent = false;
+        if ($otp !== null) {
+            require_once __DIR__ . '/../includes/mailer.php';
+            $emailSent = send_app_mail(
+                $email,
+                'Your TourBan verification code',
+                "Hello {$name},\n\nYour TourBan verification code is: {$otp}\n\n"
+                . "It expires in 15 minutes. If you did not create this account, ignore this email.\n\n— TourBan"
+            );
+        }
+
         http_response_code(201);
-        echo json_encode($result);
+        echo json_encode([
+            'success' => true,
+            'message' => $emailSent
+                ? 'Account created. Check your email for the verification code.'
+                : 'Account created. If you do not receive an email, request a new code on the verification page.',
+            'requires_verification' => true,
+            'email' => $email
+        ]);
     } else {
         http_response_code(400);
         echo json_encode($result);

@@ -6,7 +6,10 @@ A tourism and travel booking website built with PHP, MySQL, and Bootstrap 5.
 
 - Homepage with hero section and smart search
 - Destinations catalog, services, about, and contact pages
-- User registration, login, session-based dashboard, and profile editing
+- User registration with **email OTP verification**, login, session-based dashboard, and profile editing
+- **Forgot password** via email OTP + reset
+- **Persistent remember-me** (hashed DB tokens, 30 days)
+- Booking system (create, view, cancel)
 - AI travel chatbot powered by Groq Cloud (server-side API proxy)
 
 ## Tech Stack

@@ -5,6 +5,15 @@ require_once __DIR__ . '/../includes/security.php';
 // Start session with secure cookie settings
 secure_session_start();
 
+// Persistent remember-me login (DB-backed token)
+if (empty($_SESSION['logged_in']) && !empty($_COOKIE['remember_me'])) {
+    require_once __DIR__ . '/auth.php';
+    $authBootstrap = new Auth();
+    if ($authBootstrap->loginWithRememberToken((string) $_COOKIE['remember_me'])) {
+        // Regenerated session is valid for this request onward
+    }
+}
+
 $isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
 $base = BASE_URL;

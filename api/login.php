@@ -66,13 +66,25 @@ try {
     if ($result['success']) {
         login_rate_limit_reset();
 
-        // Set remember me cookie if requested
-        if ($rememberMe) {
-            $cookieValue = base64_encode($email . '|' . time());
-            setcookie('remember_me', $cookieValue, time() + (30 * 24 * 60 * 60), '/'); // 30 days
+        // Persistent remember-me (DB-backed hashed token)
+        if ($rememberMe && isset($result['user']['id'])) {
+            $token = $auth->createRememberToken((int) $result['user']['id']);
+            if ($token !== null) {
+                setcookie('remember_me', $token, [
+                    'expires' => time() + (30 * 24 * 60 * 60),
+                    'path' => '/',
+                    'secure' => (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                        || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https'),
+                    'httponly' => true,
+                    'samesite' => 'Lax'
+                ]);
+            }
         }
 
         http_response_code(200);
+        echo json_encode($result);
+    } elseif (!empty($result['requires_verification'])) {
+        http_response_code(403);
         echo json_encode($result);
     } else {
         login_rate_limit_fail();

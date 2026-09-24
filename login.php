@@ -55,7 +55,7 @@ include 'includes/header.php';
 
                         <div class="login-footer">
                             <div class="text-center mb-3">
-                                <a href="#" class="forgot-password-link">Forgot your password?</a>
+                                <a href="<?php echo htmlspecialchars(asset('forgot-password.php'), ENT_QUOTES, 'UTF-8'); ?>" class="forgot-password-link">Forgot your password?</a>
                             </div>
                             <p class="text-center">
                                 Don't have an account?

@@ -21,13 +21,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 require_csrf();
 
 try {
-    // Clear remember me cookie
+    // Clear remember me cookie + server-side tokens
     if (isset($_COOKIE['remember_me'])) {
-        setcookie('remember_me', '', time() - 3600, '/');
+        setcookie('remember_me', '', [
+            'expires' => time() - 3600,
+            'path' => '/',
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
     }
 
-    // Logout user
     $auth = new Auth();
+    $uid = $_SESSION['user_id'] ?? null;
+    if ($uid) {
+        $auth->clearRememberTokens((int) $uid);
+    }
+
     $result = $auth->logout();
 
     http_response_code(200);

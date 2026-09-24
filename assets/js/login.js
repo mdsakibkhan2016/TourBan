@@ -81,6 +81,13 @@ function handleFormSubmit(event) {
                 setTimeout(() => {
                     window.location.href = (window.BASE_URL || '') + '/dashboard.php';
                 }, 1500);
+            } else if (result.requires_verification) {
+                showErrorMessage(result.message || 'Please verify your email first.');
+                setTimeout(() => {
+                    var target = (window.BASE_URL || '') + '/verify.php';
+                    if (result.email) target += '?email=' + encodeURIComponent(result.email);
+                    window.location.href = target;
+                }, 2000);
             } else {
                 showErrorMessage(result.message || 'Login failed. Please try again.');
             }
