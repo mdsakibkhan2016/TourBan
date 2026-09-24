@@ -1,25 +1,31 @@
 # Environment files (never commit secrets)
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
 
 # Dependencies
 /vendor/
 node_modules/
 
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+server.pid
+
 # IDE / editor
 .vscode/
 .idea/
-*.swp
-*.swo
+*.sublime-project
+*.sublime-workspace
 
 # OS files
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-npm-debug.log*
-
-# Local PHP server runtime
-/server.pid
