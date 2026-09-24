@@ -15,6 +15,10 @@ Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteRule ^config(/|$) - [F,L,NC]
+    RewriteRule ^includes(/|$) - [F,L,NC]
+    RewriteRule ^admin/includes(/|$) - [F,L,NC]
+    RewriteRule ^migrations\.sql$ - [F,L,NC]
+    RewriteRule ^database\.sql$ - [F,L,NC]
     RewriteRule ^\.env - [F,L,NC]
     RewriteRule ^\.git - [F,L,NC]
 </IfModule>

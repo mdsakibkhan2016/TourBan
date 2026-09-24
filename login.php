@@ -4,8 +4,16 @@ require_once __DIR__ . '/config/env.php';
 // Check if user is already logged in
 secure_session_start();
 
+// Optional post-login redirect (same-site paths only — no open redirects).
+$redirectParam = isset($_GET['redirect']) && is_string($_GET['redirect']) ? $_GET['redirect'] : '';
+$isLocalRedirect = $redirectParam !== ''
+    && strpos($redirectParam, '/') === 0
+    && strpos($redirectParam, '//') !== 0
+    && strpos($redirectParam, '\\') === false;
+$loginRedirect = $isLocalRedirect ? $redirectParam : '/dashboard.php';
+
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
-    header('Location: dashboard.php');
+    header('Location: ' . BASE_URL . $loginRedirect);
     exit;
 }
 
@@ -73,4 +81,7 @@ include 'includes/header.php';
 <?php include 'includes/footer.php'; ?>
 
 <!-- Login JavaScript -->
+<script>
+    window.LOGIN_REDIRECT = <?php echo json_encode($loginRedirect); ?>;
+</script>
 <script src="<?php echo htmlspecialchars(asset('assets/js/login.js'), ENT_QUOTES, 'UTF-8'); ?>"></script>

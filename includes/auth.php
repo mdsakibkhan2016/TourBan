@@ -66,7 +66,7 @@ class Auth
         }
 
         try {
-            $sql = "SELECT id, name, email, password, address, phone, birthdate, is_verified FROM users WHERE email = ?";
+            $sql = "SELECT * FROM users WHERE email = ?";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$email]);
 
@@ -74,6 +74,15 @@ class Auth
                 $user = $stmt->fetch();
 
                 if (password_verify($password, $user['password'])) {
+                    // Admin deactivation (column added by migrations.sql)
+                    if (array_key_exists('is_active', $user) && (int) $user['is_active'] !== 1) {
+                        return [
+                            'success' => false,
+                            'deactivated' => true,
+                            'message' => 'Your account has been deactivated. Please contact support.'
+                        ];
+                    }
+
                     // Start session if not already started
                     secure_session_start();
                     // Prevent session fixation
@@ -95,6 +104,7 @@ class Auth
                     $_SESSION['user_address'] = $user['address'];
                     $_SESSION['user_phone'] = $user['phone'];
                     $_SESSION['user_birthdate'] = $user['birthdate'];
+                    $_SESSION['user_role'] = $user['role'] ?? 'user';
                     $_SESSION['logged_in'] = true;
 
                     return [
@@ -161,7 +171,8 @@ class Auth
             'email' => $_SESSION['user_email'],
             'address' => $_SESSION['user_address'],
             'phone' => $_SESSION['user_phone'] ?? '',
-            'birthdate' => $_SESSION['user_birthdate'] ?? ''
+            'birthdate' => $_SESSION['user_birthdate'] ?? '',
+            'role' => $_SESSION['user_role'] ?? 'user'
         ];
     }
 
@@ -452,7 +463,7 @@ class Auth
         try {
             $hash = hash('sha256', $token);
             $stmt = $this->db->prepare(
-                "SELECT u.id, u.name, u.email, u.address, u.phone, u.birthdate, u.is_verified
+                "SELECT u.*
                  FROM remember_tokens rt
                  JOIN users u ON u.id = rt.user_id
                  WHERE rt.token_hash = ? AND rt.expires_at > NOW() LIMIT 1"
@@ -468,6 +479,10 @@ class Auth
                 return false;
             }
 
+            if (array_key_exists('is_active', $user) && (int) $user['is_active'] !== 1) {
+                return false;
+            }
+
             secure_session_start();
             session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
@@ -476,6 +491,7 @@ class Auth
             $_SESSION['user_address'] = $user['address'];
             $_SESSION['user_phone'] = $user['phone'];
             $_SESSION['user_birthdate'] = $user['birthdate'];
+            $_SESSION['user_role'] = $user['role'] ?? 'user';
             $_SESSION['logged_in'] = true;
 
             return true;

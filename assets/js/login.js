@@ -77,9 +77,9 @@ function handleFormSubmit(event) {
                     sessionStorage.setItem('userEmail', data.email);
                 }
 
-                // Redirect to dashboard
+                // Redirect (server-provided same-site target, e.g. /admin/)
                 setTimeout(() => {
-                    window.location.href = (window.BASE_URL || '') + '/dashboard.php';
+                    window.location.href = (window.BASE_URL || '') + (window.LOGIN_REDIRECT || '/dashboard.php');
                 }, 1500);
             } else if (result.requires_verification) {
                 showErrorMessage(result.message || 'Please verify your email first.');

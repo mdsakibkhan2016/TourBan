@@ -16,6 +16,7 @@ if (empty($_SESSION['logged_in']) && !empty($_COOKIE['remember_me'])) {
 
 $isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
+$isAdmin = $isLoggedIn && (($_SESSION['user_role'] ?? '') === 'admin');
 $base = BASE_URL;
 $csrfToken = csrf_token();
 ?>
@@ -103,6 +104,9 @@ $csrfToken = csrf_token();
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
                                 <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/profile.php"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
+                                <?php if ($isAdmin): ?>
+                                    <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/admin/index.php"><i class="fas fa-user-shield me-2"></i>Admin Panel</a></li>
+                                <?php endif; ?>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
