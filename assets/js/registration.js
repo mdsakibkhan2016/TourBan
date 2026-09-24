@@ -63,7 +63,7 @@ function handleFormSubmit(event) {
                 form.reset();
                 // Redirect to login page
                 setTimeout(() => {
-                    window.location.href = '/login.php';
+                    window.location.href = (window.BASE_URL || '') + '/login.php';
                 }, 1000);
             } else {
                 alert(result.message || 'Registration failed. Please try again.');

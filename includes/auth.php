@@ -22,6 +22,10 @@ class Auth
      */
     public function register($name, $email, $password, $address = '')
     {
+        if (!$this->db) {
+            return ['success' => false, 'message' => 'Service temporarily unavailable'];
+        }
+
         try {
             // Check if email already exists
             if ($this->emailExists($email)) {
@@ -42,7 +46,8 @@ class Auth
                 return ['success' => false, 'message' => 'Registration failed'];
             }
         } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+            error_log('[TourBan] Register error: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Registration failed due to a server error'];
         }
     }
 
@@ -51,6 +56,10 @@ class Auth
      */
     public function login($email, $password)
     {
+        if (!$this->db) {
+            return ['success' => false, 'message' => 'Service temporarily unavailable'];
+        }
+
         try {
             $sql = "SELECT id, name, email, password, address, phone, birthdate FROM users WHERE email = ?";
             $stmt = $this->db->prepare($sql);
@@ -61,9 +70,7 @@ class Auth
 
                 if (password_verify($password, $user['password'])) {
                     // Start session if not already started
-                    if (session_status() == PHP_SESSION_NONE) {
-                        session_start();
-                    }
+                    secure_session_start();
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['user_name'] = $user['name'];
                     $_SESSION['user_email'] = $user['email'];
@@ -85,13 +92,14 @@ class Auth
                         ]
                     ];
                 } else {
-                    return ['success' => false, 'message' => 'Invalid password'];
+                    return ['success' => false, 'message' => 'Invalid email or password'];
                 }
             } else {
-                return ['success' => false, 'message' => 'User not found'];
+                return ['success' => false, 'message' => 'Invalid email or password'];
             }
         } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+            error_log('[TourBan] Login error: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Login failed due to a server error'];
         }
     }
 
@@ -100,9 +108,7 @@ class Auth
      */
     public function logout()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+        secure_session_start();
         session_destroy();
         return ['success' => true, 'message' => 'Logged out successfully'];
     }
@@ -112,9 +118,7 @@ class Auth
      */
     public function isLoggedIn()
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
+        secure_session_start();
         return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
     }
 
@@ -142,6 +146,10 @@ class Auth
      */
     private function emailExists($email)
     {
+        if (!$this->db) {
+            return false;
+        }
+
         $sql = "SELECT id FROM users WHERE email = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->execute([$email]);
@@ -153,6 +161,10 @@ class Auth
      */
     public function updateProfile($userId, $name, $email, $address, $phone = '', $birthdate = '')
     {
+        if (!$this->db) {
+            return ['success' => false, 'message' => 'Service temporarily unavailable'];
+        }
+
         try {
             // Check if email is being changed and if it already exists
             if ($email !== $_SESSION['user_email'] && $this->emailExists($email)) {
@@ -176,7 +188,8 @@ class Auth
                 return ['success' => false, 'message' => 'Profile update failed'];
             }
         } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+            error_log('[TourBan] Profile update error: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Profile update failed due to a server error'];
         }
     }
 
@@ -185,6 +198,10 @@ class Auth
      */
     public function changePassword($userId, $currentPassword, $newPassword)
     {
+        if (!$this->db) {
+            return ['success' => false, 'message' => 'Service temporarily unavailable'];
+        }
+
         try {
             // Verify current password
             $sql = "SELECT password FROM users WHERE id = ?";
@@ -208,7 +225,8 @@ class Auth
                 return ['success' => false, 'message' => 'Password change failed'];
             }
         } catch (PDOException $e) {
-            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
+            error_log('[TourBan] Password change error: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Password change failed due to a server error'];
         }
     }
 }

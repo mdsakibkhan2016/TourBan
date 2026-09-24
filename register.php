@@ -1,8 +1,8 @@
 <?php
+require_once __DIR__ . '/config/env.php';
+
 // Check if user is already logged in
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+secure_session_start();
 
 if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
     header('Location: dashboard.php');
@@ -62,7 +62,7 @@ include 'includes/header.php';
                         <div class="registration-footer">
                             <p class="text-center">
                                 Already have an account?
-                                <a href="/login.php" class="login-link">Sign in</a>
+                                <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/login.php" class="login-link">Sign in</a>
                             </p>
                         </div>
                     </form>

@@ -1,11 +1,12 @@
 <?php
-// Start session and check login status
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../config/env.php';
+
+// Start session with secure cookie settings
+secure_session_start();
 
 $isLoggedIn = isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
 $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
+$base = BASE_URL;
 ?>
 <!DOCTYPE html>
 <html lang="bn">
@@ -43,7 +44,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
     <!-- Bootstrap Navbar Start -->
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href="<?php echo htmlspecialchars($base ?: '/', ENT_QUOTES, 'UTF-8'); ?>">
                 <img
                     src="assets/images/logo.png"
                     alt="Tourist Logo"
@@ -65,19 +66,19 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/">Home</a>
+                        <a class="nav-link active" href="<?php echo htmlspecialchars($base ?: '/', ENT_QUOTES, 'UTF-8'); ?>">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/about.php">About</a>
+                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/about.php">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/services.php">Services</a>
+                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/services.php">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/destinations.php">Destinations</a>
+                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/destinations.php">Destinations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/contact.php">Contact</a>
+                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/contact.php">Contact</a>
                     </li>
                 </ul>
                 <div class="d-flex">
@@ -88,8 +89,8 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                                 <i class="fas fa-user me-2"></i><?php echo htmlspecialchars($userName); ?>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-                                <li><a class="dropdown-item" href="/profile.php"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/profile.php"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
@@ -98,8 +99,8 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                         </div>
                     <?php else: ?>
                         <!-- User is not logged in - show login/register buttons -->
-                        <a href="/login.php" class="btn btn-outline-primary px-4 me-2">Login</a>
-                        <a href="/register.php" class="btn btn-primary px-4">Register</a>
+                        <a href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/login.php" class="btn btn-outline-primary px-4 me-2">Login</a>
+                        <a href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/register.php" class="btn btn-primary px-4">Register</a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -109,6 +110,8 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
 
     <!-- Logout JavaScript Function -->
     <script>
+        window.BASE_URL = <?php echo json_encode($base, JSON_UNESCAPED_SLASHES); ?>;
+
         function logout() {
             if (confirm('Are you sure you want to logout?')) {
                 fetch('api/logout.php', {
@@ -120,7 +123,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                     .then(response => response.json())
                     .then(result => {
                         if (result.success) {
-                            window.location.href = '/login.php';
+                            window.location.href = (window.BASE_URL || '') + '/login.php';
                         } else {
                             alert('Logout failed. Please try again.');
                         }
@@ -128,7 +131,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                     .catch(error => {
                         console.error('Logout error:', error);
                         // Force redirect even if API call fails
-                        window.location.href = '/login.php';
+                        window.location.href = (window.BASE_URL || '') + '/login.php';
                     });
             }
         }

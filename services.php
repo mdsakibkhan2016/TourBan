@@ -338,8 +338,8 @@
                     personalized consultation.
                 </p>
                 <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
-                    <a href="contact.html" class="btn btn-light btn-lg px-5">Get Started</a>
-                    <a href="destinations.html" class="btn btn-outline-light btn-lg px-5">View Destinations</a>
+                    <a href="contact.php" class="btn btn-light btn-lg px-5">Get Started</a>
+                    <a href="destinations.php" class="btn btn-outline-light btn-lg px-5">View Destinations</a>
                 </div>
             </div>
         </div>

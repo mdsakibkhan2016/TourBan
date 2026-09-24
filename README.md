@@ -1,215 +1,199 @@
-# 🌍 TourBan - Tourism Website
+# TourBan
 
-A comprehensive tourism and travel booking website built as part of a Web & Internet Programming Lab Project. TourBan provides users with an intuitive platform to explore destinations, book tours, and plan their perfect travel experiences.
+A tourism and travel booking website built with PHP, MySQL, and Bootstrap 5.
 
-## 🚀 Features
+## Features
 
-### 🏠 **Homepage**
+- Homepage with hero section and smart search
+- Destinations catalog, services, about, and contact pages
+- User registration, login, session-based dashboard, and profile editing
+- AI travel chatbot powered by xAI Grok (server-side API proxy)
 
-- Modern hero section with interactive search functionality
-- Featured destinations showcase
-- Service highlights and company overview
-- Responsive navigation with smooth scrolling
+## Tech Stack
 
-### 🗺️ **Destinations**
+| Layer | Technology |
+|-------|------------|
+| Backend | PHP 8.1+ (PDO, sessions) |
+| Database | MySQL 8 / MariaDB 10.4+ |
+| Frontend | HTML5, CSS3, JavaScript (ES6), Bootstrap 5 |
+| AI | xAI Grok API (`https://api.x.ai/v1`) |
+| Icons / Fonts | Font Awesome, Google Fonts (CDN) |
 
-- Comprehensive destination catalog with beautiful imagery
-- Popular destinations including Rome, Santorini, Bali, Paris, Tokyo, and more
-- Destination filtering and search capabilities
-- Detailed destination information and pricing
-
-### 🛎️ **Services**
-
-- **Worldwide Tours**: Expertly crafted tour packages across all continents
-- **Hotel Reservations**: Premium accommodation booking with partner hotels
-- **Travel Guides**: Professional local guides and personalized experiences
-- **Transportation**: Airport transfers, car rentals, and private drivers
-- **Adventure Tours**: Thrilling experiences for adrenaline seekers
-- **Event Planning**: Corporate travel and special occasion planning
-
-### 📞 **Contact & Support**
-
-- Contact form with inquiry management
-- FAQ section with common travel questions
-- Multiple contact methods (phone, email, address)
-- 24/7 customer support information
-
-### ℹ️ **About Us**
-
-- Company story and mission
-- Team member profiles
-- Company values and statistics
-- Awards and recognition showcase
-
-### 🎨 **Interactive Features**
-
-- Smart search with auto-suggestions and categories
-- Responsive chatbot interface
-- Newsletter subscription
-- Social media integration
-- Mobile-responsive design
-
-## 🛠️ Technologies Used
-
-### **Frontend**
-
-- **HTML5** - Semantic markup structure
-- **CSS3** - Modern styling with custom properties
-- **JavaScript (ES6+)** - Interactive functionality and DOM manipulation
-- **Bootstrap 5** - Responsive framework and components
-
-### **External Libraries & Services**
-
-- **Font Awesome 6.5.2** - Icon library
-- **Google Fonts** - Typography (Poppins & Noto Sans Bengali)
-- **Unsplash API** - High-quality destination imagery
-
-### **Backend**
-
-- **PHP** - Server-side scripting (Admin panel)
-
-## 📁 Project Structure
+## Project Structure
 
 ```text
-tourban/
-├── index.html              # Homepage
-├── about.html              # About us page
-├── destinations.html       # Destinations catalog
-├── services.html          # Services overview
-├── contact.html           # Contact form and info
-├── admin/                 # Admin panel
-│   └── index.php         # Admin dashboard
-├── assets/               # Static assets
-│   ├── css/             # Stylesheets
-│   │   ├── main.css     # Main styles
-│   │   ├── footer.css   # Footer styles
-│   │   └── chatbot.css  # Chatbot styles
-│   ├── images/          # Image assets
-│   │   └── logo.png     # Company logo
-│   └── js/              # JavaScript files
-│       ├── herosection.js  # Search & hero functionality
-│       └── chatbot.js      # Chatbot implementation
-└── README.md            # Project documentation
+TourBan/
+├── index.php, about.php, ...     # Public pages
+├── login.php, register.php       # Auth pages
+├── dashboard.php, profile.php    # Logged-in pages
+├── api/                          # JSON endpoints (login, register, logout, profile, chatbot)
+├── assets/                       # css, js, images
+├── config/                       # env loader, database, DB init script
+├── includes/                     # header, footer, auth, chatbot UI
+├── .env.example                  # Environment variable template
+├── .htaccess                     # Apache security / caching
+└── README.md
 ```
 
-## 🎯 Key Functionalities
+## Requirements
 
-### **Search System**
+- PHP 8.1 or newer with `pdo_mysql` and `curl` extensions
+- MySQL 8 or MariaDB 10.4+
+- Apache with `mod_rewrite` (or Nginx with equivalent rules)
+- An xAI account and API key for the chatbot (optional but recommended)
 
-- Real-time search suggestions
-- Category-based filtering (Services, Destinations, Information)
-- Local storage for recent searches
-- Keyboard navigation support
-
-### **Responsive Design**
-
-- Mobile-first approach
-- Flexible grid layouts
-- Optimized images and performance
-- Cross-browser compatibility
-
-### **User Experience**
-
-- Smooth scrolling navigation
-- Interactive hover effects
-- Loading animations
-- Accessible design patterns
-
-## 🚀 Getting Started
-
-### **Prerequisites**
-
-- Web browser (Chrome, Firefox, Safari, Edge)
-- Local web server (optional, for PHP features)
-
-### **Installation**
+## Installation (Local Development)
 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/mdsakibkhan2016/TourBan-Project.git
-   cd TourBan-Project
+   git clone https://github.com/mdsakibkhan2016/TourBan.git
+   cd TourBan
    ```
 
-2. **Local Development**
-
-   - Open `index.html` in your web browser
-   - Or serve using a local server:
+2. **Create your environment file**
 
    ```bash
-   # Using Python
-   python -m http.server 8000
-   
-   # Using Node.js
-   npx http-server
-   
-   # Using PHP
+   cp .env.example .env
+   ```
+
+   Edit `.env` and set your database credentials and API keys.
+
+3. **Create the database and tables**
+
+   ```bash
+   mysql -u root -p -e "CREATE DATABASE tourban_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+   ```
+
+   Then open (with `APP_ENV=local` in `.env`):
+
+   ```
+   http://localhost:8000/config/init_database.php
+   ```
+
+   Or import the `users` table manually (see `config/init_database.php` for the schema).
+
+4. **Start the PHP development server**
+
+   ```bash
    php -S localhost:8000
    ```
 
-3. **Access the website**
-   - Open `http://localhost:8000` in your browser
-   - Navigate through different pages using the menu
+5. **Open the site**
 
-## 🌟 Usage
+   Visit `http://localhost:8000`.
 
-1. **Explore Destinations**: Browse through featured destinations and find your perfect getaway
-2. **Search Functionality**: Use the smart search to find specific destinations, services, or information
-3. **Service Booking**: Learn about different travel services and contact for bookings
-4. **Get Information**: Visit the About page to learn more about TourBan
-5. **Contact Support**: Use the contact form or direct contact methods for inquiries
+## Environment Variables
 
-## 📱 Responsive Breakpoints
+Copy `.env.example` to `.env`. **Never commit `.env`.**
 
-- **Mobile**: 320px - 768px
-- **Tablet**: 768px - 1024px
-- **Desktop**: 1024px and above
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `APP_URL` | Prod | Public site URL, no trailing slash (empty = domain root). Example: `https://example.com` |
+| `APP_DEBUG` | No | `true` only in local development |
+| `APP_ENV` | Yes | `local` or `production` |
+| `DB_HOST` | Yes | Database host (`localhost` or hosting provider host) |
+| `DB_NAME` | Yes | Database name |
+| `DB_USER` | Yes | Database username |
+| `DB_PASS` | Yes | Database password |
+| `DB_CHARSET` | No | Default `utf8mb4` |
+| `XAI_API_KEY` | Chatbot | Your xAI Grok API key from [console.x.ai](https://console.x.ai) |
+| `XAI_MODEL` | No | Default `grok-2-latest` |
+| `XAI_API_BASE` | No | Default `https://api.x.ai/v1` |
 
-## 🔧 Customization
+### Where to set environment variables by platform
 
-### **Styling**
+| Platform | How to set variables |
+|----------|----------------------|
+| **cPanel / Hostinger shared hosting** | Upload a `.env` file next to `index.php` (file manager), **or** add the same keys under *Setup PHP Environment Variables* / *Environment* in the control panel. |
+| **Render** | Dashboard → Service → *Environment* tab → add key/value pairs. |
+| **Railway** | Project → Service → *Variables* tab. |
+| **Vercel** | Project → Settings → *Environment Variables*. |
+| **Netlify** | Site → Site configuration → *Environment variables*. |
+| **DigitalOcean App Platform** | App → *Settings → Environment variables*. |
+| **VPS (Apache/Nginx + PHP-FPM)** | Set variables in the systemd unit, Nginx/Apache vhost `env` directives, or a `.env` file in the web root (blocked by `.htaccess`). |
+| **AWS / GCP / Azure** | Use the platform secret manager or service environment configuration. |
 
-- Modify `assets/css/main.css` for general styles
-- Update `assets/css/footer.css` for footer customizations
-- Adjust `assets/css/chatbot.css` for chatbot appearance
+Real server environment variables always override values in `.env`.
 
-### **Content**
+## Grok Chatbot Configuration
 
-- Update destination information in `destinations.html`
-- Modify service details in `services.html`
-- Customize company information in `about.html`
+1. Create an account at [console.x.ai](https://console.x.ai) and generate an API key.
+2. Set it in `.env` (local) or your hosting environment panel (production):
 
-### **Functionality**
+   ```env
+   XAI_API_KEY=xai-your-real-key
+   XAI_MODEL=grok-2-latest
+   XAI_API_BASE=https://api.x.ai/v1
+   ```
 
-- Enhance search features in `assets/js/herosection.js`
-- Extend chatbot capabilities in `assets/js/chatbot.js`
+3. The browser only calls `api/chatbot.php`. The PHP endpoint reads `XAI_API_KEY` server-side and calls the official xAI API. **The key is never sent to the client.**
 
-## 🤝 Contributing
+## Database Setup
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Schema (created by `config/init_database.php` when `APP_ENV=local`):
 
-## 📄 License
+```sql
+CREATE TABLE users (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    address TEXT,
+    phone VARCHAR(20),
+    birthdate DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+```
 
-This project is part of a Web & Internet Programming Lab assignment. All rights reserved.
+Passwords are stored with `password_hash()` (bcrypt).
 
-## 📞 Contact
+## Deployment Steps
 
-- **Email**: <tourban@gmail.com>
-- **Phone**: +096 345 67890
-- **Address**: 343/1, Nakhalpara, Dhaka
-- **Website**: [TourBan](https://github.com/mdsakibkhan2016/TourBan-Project)
+1. Push the project to your Git repository.
+2. Create a MySQL database and user on your host.
+3. Deploy the code (Git integration, FTP, or file manager).
+4. Add environment variables (see platform table above) or upload `.env`.
+5. Set `APP_ENV=production` and `APP_DEBUG=false`.
+6. Set `APP_URL` to your live URL (no trailing slash), e.g. `https://your-domain.com`.
+7. Run database initialization once (local only), or import the SQL schema manually.
+8. Ensure the web root points at the project folder (where `index.php` lives).
+9. Verify: homepage, register, login, dashboard, chatbot.
 
-## 🙏 Acknowledgments
+### Shared hosting checklist (cPanel / Hostinger)
 
-- Unsplash for providing high-quality images
-- Bootstrap team for the responsive framework
-- Font Awesome for the comprehensive icon library
-- Google Fonts for typography resources
+- [ ] PHP 8.1+ selected
+- [ ] `pdo_mysql` and `curl` enabled
+- [ ] `.env` uploaded (or env vars set in panel)
+- [ ] Database created and user attached
+- [ ] `.htaccess` present in web root
+- [ ] `APP_ENV=production`
 
----
+## Security Notes
 
-### Built with ❤️ for Web & Internet Programming Lab
+- `.env` is git-ignored and blocked by `.htaccess`
+- API keys are read only on the server
+- SQL uses prepared statements (PDO)
+- Session cookies: `HttpOnly`, `SameSite=Lax`, `Secure` when HTTPS
+- Error details are logged with `error_log()`, not shown to users when `APP_DEBUG=false`
+- Chatbot input is length-validated; UI renders messages via `textContent` (XSS-safe)
+
+## Git
+
+```bash
+git add .
+git commit -m "Your message"
+git push origin main
+```
+
+Do **not** commit `.env` or real API keys.
+
+## License
+
+Web & Internet Programming Lab project. All rights reserved.
+
+## Contact
+
+- Email: tourban@gmail.com
+- Repository: https://github.com/mdsakibkhan2016/TourBan

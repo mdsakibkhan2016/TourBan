@@ -78,7 +78,7 @@ function handleFormSubmit(event) {
 
                 // Redirect to dashboard
                 setTimeout(() => {
-                    window.location.href = '/dashboard.php';
+                    window.location.href = (window.BASE_URL || '') + '/dashboard.php';
                 }, 1500);
             } else {
                 showErrorMessage(result.message || 'Login failed. Please try again.');

@@ -6,9 +6,7 @@
  */
 
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type');
+header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../includes/auth.php';
 
@@ -89,6 +87,7 @@ try {
         echo json_encode($result);
     }
 } catch (Exception $e) {
+    error_log('[TourBan] Profile API error: ' . $e->getMessage());
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Server error: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Server error. Please try again later.']);
 }

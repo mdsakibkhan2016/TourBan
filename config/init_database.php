@@ -43,7 +43,8 @@ class DatabaseInit
 
             return true;
         } catch (PDOException $e) {
-            echo "Error creating users table: " . $e->getMessage() . "<br>";
+            error_log('[TourBan] Users table error: ' . $e->getMessage());
+            echo "Error creating users table.<br>";
             return false;
         }
     }
@@ -68,7 +69,8 @@ class DatabaseInit
                 echo "Added birthdate column to users table<br>";
             }
         } catch (PDOException $e) {
-            echo "Error adding new columns: " . $e->getMessage() . "<br>";
+            error_log('[TourBan] Column migration error: ' . $e->getMessage());
+            echo "Error adding new columns.<br>";
         }
     }
 
@@ -103,7 +105,8 @@ class DatabaseInit
             echo "Password: password123<br>";
             return true;
         } catch (PDOException $e) {
-            echo "Error inserting sample user: " . $e->getMessage() . "<br>";
+            error_log('[TourBan] Sample user error: ' . $e->getMessage());
+            echo "Error inserting sample user.<br>";
             return false;
         }
     }
@@ -135,8 +138,14 @@ class DatabaseInit
     }
 }
 
-// Run initialization if accessed directly
+// Run initialization if accessed directly (blocked in production)
 if (basename($_SERVER['PHP_SELF']) == 'init_database.php') {
+    if (env('APP_ENV', 'production') === 'production') {
+        http_response_code(403);
+        echo 'Forbidden';
+        exit;
+    }
+
     $init = new DatabaseInit();
     $init->initialize();
 }

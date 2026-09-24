@@ -262,8 +262,8 @@
                         Let us help you create memories that will last a lifetime.
                     </p>
                     <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
-                        <a href="contact.html" class="btn btn-primary btn-lg px-5">Contact Us</a>
-                        <a href="destinations.html" class="btn btn-outline-primary btn-lg px-5">View Destinations</a>
+                        <a href="contact.php" class="btn btn-primary btn-lg px-5">Contact Us</a>
+                        <a href="destinations.php" class="btn btn-outline-primary btn-lg px-5">View Destinations</a>
                     </div>
                 </div>
             </div>

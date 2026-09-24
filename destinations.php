@@ -433,8 +433,8 @@
                         experts are ready to help you plan the perfect trip.
                     </p>
                     <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
-                        <a href="contact.html" class="btn btn-light btn-lg px-5">Plan My Trip</a>
-                        <a href="services.html" class="btn btn-outline-light btn-lg px-5">View Services</a>
+                        <a href="contact.php" class="btn btn-light btn-lg px-5">Plan My Trip</a>
+                        <a href="services.php" class="btn btn-outline-light btn-lg px-5">View Services</a>
                     </div>
                 </div>
             </div>

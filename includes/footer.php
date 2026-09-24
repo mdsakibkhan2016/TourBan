@@ -9,10 +9,10 @@ include 'chatbot.php';
                 <h4>Company</h4>
                 <ul>
                     <li>
-                        <a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a>
+                        <a href="about.php"><i class="fas fa-chevron-right"></i> About Us</a>
                     </li>
                     <li>
-                        <a href="contact.html"><i class="fas fa-chevron-right"></i> Contact Us</a>
+                        <a href="contact.php"><i class="fas fa-chevron-right"></i> Contact Us</a>
                     </li>
                     <li>
                         <a href="#"><i class="fas fa-chevron-right"></i> Privacy Policy</a>
