@@ -1,0 +1,39 @@
+name: Deploy to InfinityFree
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: FTP deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          server-dir: /htdocs/
+          timeout: 180000
+          log-level: standard
+          exclude: |
+            .git
+            .github
+            .env
+            .env.*
+            node_modules
+            logs
+            temporary
+            temp
+            .vscode
+            .idea
