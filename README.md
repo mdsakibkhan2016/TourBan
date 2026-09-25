@@ -9,7 +9,10 @@ A tourism and travel booking website built with PHP, MySQL, and Bootstrap 5.
 - User registration with **email OTP verification**, login, session-based dashboard, and profile editing
 - **Forgot password** via email OTP + reset
 - **Persistent remember-me** (hashed DB tokens, 30 days)
-- Booking system (create, view, cancel)
+- Booking system (create, view, cancel) with **checkout payment page**
+- **Payment architecture** — sandbox gateway built in; SSLCommerz, Stripe, and PayPal ready (credential-driven)
+- **Email notifications** via PHPMailer SMTP (OTP, password reset, booking confirmation, status changes)
+- **Admin panel** — dashboard stats, user roles, destinations, bookings, settings
 - AI travel chatbot powered by Groq Cloud (server-side API proxy)
 
 ## Tech Stack
@@ -102,6 +105,21 @@ Copy `.env.example` to `.env`. **Never commit `.env`.**
 | `DB_CHARSET` | No | Default `utf8mb4` |
 | `GROQ_API_KEY` | Chatbot | Your Groq API key from [console.groq.com/keys](https://console.groq.com/keys) |
 | `GROQ_MODEL` | No | Default `llama-3.1-8b-instant` |
+| `MAIL_HOST` | Email | SMTP host (e.g. `smtp.gmail.com`). Empty = fall back to PHP `mail()` |
+| `MAIL_PORT` | Email | SMTP port, default `587` |
+| `MAIL_USERNAME` | Email | SMTP username / email address |
+| `MAIL_PASSWORD` | Email | SMTP password (e.g. Gmail app password) |
+| `MAIL_FROM` | Email | From address |
+| `MAIL_FROM_NAME` | Email | From display name |
+| `MAIL_ENCRYPTION` | Email | `tls` (default), `ssl`, or `none` |
+| `PAYMENT_GATEWAY` | No | Default `sandbox` (simulated checkout) |
+| `SSLCOMMERZ_STORE_ID` | SSLCommerz | Empty until SSLCommerz is enabled |
+| `SSLCOMMERZ_STORE_PASSWORD` | SSLCommerz | Empty until SSLCommerz is enabled |
+| `SSLCOMMERZ_SANDBOX` | SSLCommerz | `1` = test mode, `0` = live |
+| `STRIPE_SECRET_KEY` | Stripe | Empty until Stripe is enabled |
+| `STRIPE_WEBHOOK_SECRET` | Stripe | Empty until Stripe is enabled |
+| `PAYPAL_CLIENT_ID` | PayPal | Empty until PayPal is enabled |
+| `PAYPAL_CLIENT_SECRET` | PayPal | Empty until PayPal is enabled |
 
 ### Where to set environment variables by platform
 
@@ -143,6 +161,21 @@ Repository → **Settings → Secrets and variables → Actions → New reposito
 | `DB_PASS` | MySQL user password |
 | `GROQ_API_KEY` | Key from [console.groq.com/keys](https://console.groq.com/keys) |
 | `GROQ_MODEL` | `llama-3.1-8b-instant` |
+| `MAIL_HOST` | e.g. `smtp.gmail.com` (leave empty to use PHP `mail()`) |
+| `MAIL_PORT` | `587` |
+| `MAIL_USERNAME` | SMTP account email |
+| `MAIL_PASSWORD` | SMTP password / app password |
+| `MAIL_FROM` | e.g. `no-reply@your-domain.com` |
+| `MAIL_FROM_NAME` | `TourBan` |
+| `MAIL_ENCRYPTION` | `tls` |
+| `PAYMENT_GATEWAY` | `sandbox` (default) |
+| `SSLCOMMERZ_STORE_ID` | SSLCommerz store id (optional) |
+| `SSLCOMMERZ_STORE_PASSWORD` | SSLCommerz store password (optional) |
+| `SSLCOMMERZ_SANDBOX` | `1` |
+| `STRIPE_SECRET_KEY` | Stripe secret key (optional) |
+| `STRIPE_WEBHOOK_SECRET` | Stripe webhook secret (optional) |
+| `PAYPAL_CLIENT_ID` | PayPal client id (optional) |
+| `PAYPAL_CLIENT_SECRET` | PayPal client secret (optional) |
 
 `.env` is git-ignored and **must never be committed**. Only GitHub stores these values.
 
@@ -159,9 +192,31 @@ Repository → **Settings → Secrets and variables → Actions → New reposito
 3. The browser only calls `api/chatbot.php`. The PHP endpoint reads `GROQ_API_KEY` server-side and calls `https://api.groq.com/openai/v1/chat/completions`. **The key is never sent to the client.**
 4. If `GROQ_API_KEY` is missing, the API returns HTTP 503: `AI assistant is not configured.`
 
+## Payments
+
+Booking checkout is wired end-to-end: creating a booking lands the user on
+`payment.php?ref=TB-XXXXXXXX`, which posts to `api/payment.php`.
+
+| Gateway | Env credentials | Behaviour |
+|---------|-----------------|-----------|
+| `sandbox` (default) | none | Simulated charge, marks payment `paid` + booking `confirmed`. Works out of the box. |
+| `sslcommerz` | `SSLCOMMERZ_STORE_ID` + `SSLCOMMERZ_STORE_PASSWORD` | API handler ready — activates once credentials exist and the Session API call is enabled |
+| `stripe` | `STRIPE_SECRET_KEY` | API handler ready — activates once credentials exist and the Checkout Session call is enabled |
+| `paypal` | `PAYPAL_CLIENT_ID` + `PAYPAL_CLIENT_SECRET` | API handler ready — activates once credentials exist and the Orders v2 call is enabled |
+
+Security properties:
+
+- Amount is always read from the `bookings` row — never from client input
+- CSRF token required (`X-CSRF-Token`); owner-only access to a booking's payment
+- Payments are idempotent: a paid booking cannot be charged twice (HTTP 409)
+- Unconfigured gateways return HTTP 501 — no fake or real charges without credentials
+- Payment rows live in the `payments` table (status: `pending`, `paid`, `failed`, `refunded`)
+
 ## Database Setup
 
 **Production:** import `database.sql` once via phpMyAdmin (or MySQL client). It creates all tables and seed destinations.
+
+**Upgrades:** run `migrations.sql` on an existing database (adds `users.role`, `users.is_verified`, `users.is_active`, `destinations.category`, `payments` table — each statement is safe to re-run or skip if the object exists).
 
 **Local development (optional):** with `APP_ENV=local`, open `config/init_database.php` to create only the legacy `users` table.
 

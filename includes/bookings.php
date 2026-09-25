@@ -190,6 +190,28 @@ class Bookings
     }
 
     /**
+     * Look up a booking by its public reference (e.g. TB-1A2B3C4D).
+     * Ownership must be checked by the caller against user_id.
+     */
+    public function findByRef(string $bookingRef): ?array
+    {
+        if (!$this->db || $bookingRef === '') {
+            return null;
+        }
+
+        try {
+            $stmt = $this->db->prepare(
+                "SELECT * FROM bookings WHERE booking_ref = ? LIMIT 1"
+            );
+            $stmt->execute([$bookingRef]);
+            $row = $stmt->fetch();
+            return $row ?: null;
+        } catch (PDOException $e) {
+            return null;
+        }
+    }
+
+    /**
      * Cancel a booking that is not already cancelled or completed.
      */
     public function cancel(int $bookingId, int $userId): array
@@ -236,6 +258,25 @@ class Bookings
             return (int) ($row['c'] ?? 0);
         } catch (PDOException $e) {
             return 0;
+        }
+    }
+
+    /** Line items for a booking (payment summary display). */
+    public function itemsForBooking(int $bookingId): array
+    {
+        if (!$this->db) {
+            return [];
+        }
+
+        try {
+            $stmt = $this->db->prepare(
+                "SELECT destination_name, unit_price, quantity
+                 FROM booking_items WHERE booking_id = ? ORDER BY id ASC"
+            );
+            $stmt->execute([$bookingId]);
+            return $stmt->fetchAll();
+        } catch (PDOException $e) {
+            return [];
         }
     }
 }

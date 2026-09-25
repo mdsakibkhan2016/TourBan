@@ -23,3 +23,18 @@ ALTER TABLE `users`
 -- Admin panel: destination category (Beach, City, Cultural, ...)
 ALTER TABLE `destinations`
     ADD COLUMN `category` VARCHAR(50) NOT NULL DEFAULT '';
+
+-- Payment architecture (Commit 3)
+CREATE TABLE IF NOT EXISTS `payments` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `booking_id` INT(11) NOT NULL,
+    `transaction_id` VARCHAR(100) NOT NULL DEFAULT '',
+    `amount` DECIMAL(10,2) NOT NULL DEFAULT 0,
+    `payment_method` VARCHAR(30) NOT NULL DEFAULT 'sandbox',
+    `payment_status` VARCHAR(20) NOT NULL DEFAULT 'pending',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_payment_booking` (`booking_id`),
+    KEY `idx_payment_status` (`payment_status`),
+    CONSTRAINT `fk_payment_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

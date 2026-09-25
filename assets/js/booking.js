@@ -40,11 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(function (r) { return r.json(); })
             .then(function (result) {
                 if (result.success) {
-                    if (window.showToast) showToast('Booking ' + result.booking.booking_ref + ' confirmed!', 'success');
+                    if (window.showToast) showToast('Booking ' + result.booking.booking_ref + ' created!', 'success');
                     form.reset();
                     updateTotal();
                     setTimeout(function () {
-                        window.location.href = (window.BASE_URL || '') + '/dashboard.php';
+                        window.location.href = (window.BASE_URL || '') + '/payment.php?ref=' + encodeURIComponent(result.booking.booking_ref);
                     }, 1200);
                 } else {
                     if (window.showToast) showToast(result.message || 'Booking failed.', 'error');
