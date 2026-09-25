@@ -137,7 +137,22 @@ class Auth
     public function logout()
     {
         secure_session_start();
+
+        // Remove session data and the session cookie itself
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', [
+                'expires'  => time() - 4200,
+                'path'     => $params['path'],
+                'domain'   => $params['domain'],
+                'secure'   => $params['secure'],
+                'httponly' => $params['httponly'],
+                'samesite' => $params['samesite'] ?? 'Lax',
+            ]);
+        }
         session_destroy();
+
         return ['success' => true, 'message' => 'Logged out successfully'];
     }
 

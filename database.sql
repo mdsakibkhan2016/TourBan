@@ -155,6 +155,19 @@ CREATE TABLE IF NOT EXISTS `payments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
+-- Rate limits (login / OTP / email / chatbot throttling)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `rate_limits` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `attempt_key` VARCHAR(190) NOT NULL,
+    `hits` INT(11) NOT NULL DEFAULT 1,
+    `first_hit_at` DATETIME NOT NULL,
+    `last_hit_at` DATETIME NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_rate_key` (`attempt_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
 -- Seed destinations (matches public catalog)
 -- ------------------------------------------------------------
 INSERT IGNORE INTO `destinations`

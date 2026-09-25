@@ -52,10 +52,17 @@ try {
         exit;
     }
 
+    // Database-backed throttle (survives session resets): per-account + per-IP
+    $emailKey = 'login:email:' . strtolower($email);
+    $ipKey = 'login:ip:' . client_ip();
+    if (rate_limit_exceeded($emailKey, 8, 900) || rate_limit_exceeded($ipKey, 20, 900)) {
+        json_error(429, 'Too many login attempts. Please wait a few minutes and try again.');
+    }
+
     // Validate password
-    if (strlen($password) < 6) {
+    if (strlen($password) < 8) {
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+        echo json_encode(['success' => false, 'message' => 'Password must be at least 8 characters long']);
         exit;
     }
 
@@ -65,6 +72,7 @@ try {
 
     if ($result['success']) {
         login_rate_limit_reset();
+        rate_limit_clear($emailKey);
 
         // Persistent remember-me (DB-backed hashed token)
         if ($rememberMe && isset($result['user']['id'])) {
@@ -88,6 +96,8 @@ try {
         echo json_encode($result);
     } else {
         login_rate_limit_fail();
+        rate_limit_record($emailKey, 8, 900);
+        rate_limit_record($ipKey, 20, 900);
         http_response_code(401);
         echo json_encode($result);
     }

@@ -25,6 +25,15 @@ try {
         json_error(400, 'Invalid email format');
     }
 
+    // Email-bombing protection: 6 per account / 40 per IP every 15 minutes
+    $mailKey = 'otpmail:email:' . strtolower($email);
+    $mailIpKey = 'otpmail:ip:' . client_ip();
+    if (rate_limit_exceeded($mailKey, 6, 900) || rate_limit_exceeded($mailIpKey, 40, 900)) {
+        json_error(429, 'Too many requests. Please wait a few minutes and try again.');
+    }
+    rate_limit_record($mailKey, 6, 900);
+    rate_limit_record($mailIpKey, 40, 900);
+
     $auth = new Auth();
     $account = $auth->findByEmail($email);
     $otp = $auth->startPasswordReset($email);

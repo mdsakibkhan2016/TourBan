@@ -2,6 +2,14 @@
 require_once __DIR__ . '/../config/env.php';
 require_once __DIR__ . '/../includes/security.php';
 
+// Security headers (clickjacking / MIME sniffing / referrer leakage)
+if (!headers_sent()) {
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
+}
+
 // Start session with secure cookie settings
 secure_session_start();
 

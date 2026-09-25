@@ -38,3 +38,14 @@ CREATE TABLE IF NOT EXISTS `payments` (
     KEY `idx_payment_status` (`payment_status`),
     CONSTRAINT `fk_payment_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Production security audit: rate limiting (login / OTP / email / chatbot)
+CREATE TABLE IF NOT EXISTS `rate_limits` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `attempt_key` VARCHAR(190) NOT NULL,
+    `hits` INT(11) NOT NULL DEFAULT 1,
+    `first_hit_at` DATETIME NOT NULL,
+    `last_hit_at` DATETIME NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uq_rate_key` (`attempt_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

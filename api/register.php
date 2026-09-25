@@ -56,10 +56,16 @@ try {
     }
 
     // Validate password
-    if (strlen($password) < 6) {
+    if (strlen($password) < 8) {
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Password must be at least 6 characters long']);
+        echo json_encode(['success' => false, 'message' => 'Password must be at least 8 characters long']);
         exit;
+    }
+
+    // Registration sends a verification email — cap volume per IP (40 / 15 min)
+    $mailIpKey = 'otpmail:ip:' . client_ip();
+    if (rate_limit_exceeded($mailIpKey, 40, 900)) {
+        json_error(429, 'Too many requests. Please wait a few minutes and try again.');
     }
 
     // Attempt registration
@@ -67,6 +73,7 @@ try {
     $result = $auth->register($name, $email, $password, $address);
 
     if ($result['success']) {
+        rate_limit_record($mailIpKey, 40, 900);
         // Generate OTP + email verification (non-fatal if mail transport fails)
         $userId = (int) ($result['user_id'] ?? 0);
         $otp = $userId > 0 ? $auth->createOtp($userId, $email, 'registration') : null;

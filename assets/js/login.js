@@ -117,8 +117,8 @@ function validateForm(data) {
     if (!data.password) {
         showFieldError('password', 'Password is required');
         isValid = false;
-    } else if (data.password.length < 6) {
-        showFieldError('password', 'Password must be at least 6 characters long');
+    } else if (data.password.length < 8) {
+        showFieldError('password', 'Password must be at least 8 characters long');
         isValid = false;
     }
 
@@ -140,8 +140,8 @@ function validatePassword() {
     const passwordInput = document.getElementById('password');
     const password = passwordInput.value;
 
-    if (password && password.length < 6) {
-        showFieldError('password', 'Password must be at least 6 characters long');
+    if (password && password.length < 8) {
+        showFieldError('password', 'Password must be at least 8 characters long');
     } else {
         clearFieldError('password');
     }

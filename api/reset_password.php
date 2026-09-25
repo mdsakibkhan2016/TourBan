@@ -31,8 +31,8 @@ try {
         json_error(400, 'Enter the 6-digit reset code');
     }
 
-    if (strlen($password) < 6) {
-        json_error(400, 'Password must be at least 6 characters long');
+    if (strlen($password) < 8) {
+        json_error(400, 'Password must be at least 8 characters long');
     }
 
     $auth = new Auth();

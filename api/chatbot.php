@@ -31,6 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require_csrf();
 
+// Per-session throttle: 30 messages / 5 minutes (protects the AI quota)
+secure_session_start();
+$chatKey = 'chat:' . session_id();
+if (rate_limit_exceeded($chatKey, 30, 300)) {
+    json_error(429, 'Too many messages right now. Please wait a moment and try again.');
+}
+rate_limit_record($chatKey, 30, 300);
+
 try {
     $input = json_decode(file_get_contents('php://input'), true);
 

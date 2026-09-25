@@ -11,6 +11,15 @@ if (!isset($adminUser) || !is_array($adminUser)) {
 }
 
 $adminTitle = $adminPageTitle ?? 'Dashboard';
+
+// Security headers (clickjacking / MIME sniffing / referrer leakage)
+if (!headers_sent()) {
+    header('X-Content-Type-Options: nosniff');
+    header('X-Frame-Options: SAMEORIGIN');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
+}
+
 $adminNav = [
     'index.php'        => ['icon' => 'fa-gauge-high',   'label' => 'Dashboard'],
     'users.php'        => ['icon' => 'fa-users',        'label' => 'Users'],
