@@ -16,12 +16,21 @@ $bookingsHelper = new Bookings();
 $userBookings = $bookingsHelper->listForUser((int) $user['id']);
 $bookingCount = $bookingsHelper->countForUser((int) $user['id']);
 
-$statusBadges = [
-    'pending' => 'bg-warning text-dark',
-    'confirmed' => 'bg-success',
-    'cancelled' => 'bg-secondary',
-    'completed' => 'bg-primary',
-];
+$statConfirmed = 0;
+$statPending = 0;
+$statCompleted = 0;
+$statCancelled = 0;
+foreach ($userBookings as $ub) {
+    if ($ub['status'] === 'confirmed') {
+        $statConfirmed++;
+    } elseif ($ub['status'] === 'pending') {
+        $statPending++;
+    } elseif ($ub['status'] === 'completed') {
+        $statCompleted++;
+    } elseif ($ub['status'] === 'cancelled') {
+        $statCancelled++;
+    }
+}
 ?>
 
 <?php include 'includes/header.php'; ?>
@@ -258,98 +267,119 @@ $statusBadges = [
     <!-- Statistics Cards -->
     <div class="row mb-5">
         <div class="col-lg-3 col-md-6 mb-4">
-            <div class="stats-card text-center">
+            <div class="stats-card text-center fade-up fade-up-1">
                 <div class="stats-icon gradient-bg-1 text-white mx-auto">
-                    <i class="fas fa-globe-americas"></i>
-                </div>
-                <div class="stats-number text-gradient">50+</div>
-                <div class="stats-label">Destinations</div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="stats-card text-center">
-                <div class="stats-icon gradient-bg-2 text-white mx-auto">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stats-number text-gradient">500+</div>
-                <div class="stats-label">Happy Travelers</div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="stats-card text-center">
-                <div class="stats-icon gradient-bg-3 text-white mx-auto">
-                    <i class="fas fa-star"></i>
-                </div>
-                <div class="stats-number text-gradient">4.9</div>
-                <div class="stats-label">Rating</div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="stats-card text-center">
-                <div class="stats-icon gradient-bg-4 text-white mx-auto">
-                    <i class="fas fa-ticket-alt"></i>
+                    <i class="fas fa-suitcase-rolling"></i>
                 </div>
                 <div class="stats-number text-gradient"><?php echo (int) $bookingCount; ?></div>
-                <div class="stats-label">My Bookings</div>
+                <div class="stats-label">Total Bookings</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card text-center fade-up fade-up-2">
+                <div class="stats-icon gradient-bg-4 text-white mx-auto">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stats-number text-gradient"><?php echo (int) $statConfirmed; ?></div>
+                <div class="stats-label">Confirmed</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card text-center fade-up fade-up-3">
+                <div class="stats-icon gradient-bg-5 text-white mx-auto">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stats-number text-gradient"><?php echo (int) $statPending; ?></div>
+                <div class="stats-label">Pending</div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="stats-card text-center fade-up fade-up-4">
+                <div class="stats-icon gradient-bg-3 text-white mx-auto">
+                    <i class="fas fa-flag-checkered"></i>
+                </div>
+                <div class="stats-number text-gradient"><?php echo (int) $statCompleted; ?></div>
+                <div class="stats-label">Completed</div>
             </div>
         </div>
     </div>
 
     <!-- My Bookings -->
     <div class="mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <h3 class="section-title mb-0">My Bookings</h3>
             <a href="destinations.php" class="btn btn-sm btn-outline-primary">Book a New Trip</a>
         </div>
 
         <?php if (!$userBookings): ?>
-            <div class="card border-0 shadow-sm">
-                <div class="card-body text-center py-5">
-                    <i class="fas fa-luggage-cart fa-2x text-muted mb-3"></i>
-                    <p class="text-muted mb-3">You have no bookings yet.</p>
-                    <a href="destinations.php" class="btn btn-primary">Explore Destinations</a>
+            <div class="ui-empty fade-up">
+                <div class="ui-empty-icon">
+                    <i class="fas fa-luggage-cart"></i>
                 </div>
+                <h5>No trips booked yet</h5>
+                <p>Your adventures are waiting. Browse our destinations and book your first trip — it only takes a minute.</p>
+                <a href="destinations.php" class="btn btn-primary me-2">
+                    <i class="fas fa-map-marked-alt me-2"></i>Explore Destinations
+                </a>
+                <a href="services.php" class="btn btn-outline-secondary">
+                    <i class="fas fa-concierge-bell me-2"></i>View Services
+                </a>
             </div>
         <?php else: ?>
-            <div class="table-responsive card border-0 shadow-sm">
-                <table class="table align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Ref</th>
-                            <th>Destination</th>
-                            <th>Travel Date</th>
-                            <th>Travelers</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th class="text-end">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($userBookings as $b): ?>
-                            <?php
-                            $badge = $statusBadges[$b['status']] ?? 'bg-secondary';
-                            $canCancel = in_array($b['status'], ['pending', 'confirmed'], true);
-                            ?>
-                            <tr data-booking-id="<?php echo (int) $b['id']; ?>">
-                                <td class="fw-semibold"><?php echo htmlspecialchars($b['booking_ref'], ENT_QUOTES, 'UTF-8'); ?></td>
-                                <td><?php echo htmlspecialchars($b['destination_name'] ?: '—', ENT_QUOTES, 'UTF-8'); ?></td>
-                                <td><?php echo htmlspecialchars($b['travel_date'] ? date('M j, Y', strtotime($b['travel_date'])) : '—', ENT_QUOTES, 'UTF-8'); ?></td>
-                                <td><?php echo (int) $b['travelers']; ?></td>
-                                <td>$<?php echo htmlspecialchars(number_format((float) $b['total_amount'], 2), ENT_QUOTES, 'UTF-8'); ?></td>
-                                <td><span class="badge <?php echo $badge; ?>"><?php echo htmlspecialchars(ucfirst($b['status']), ENT_QUOTES, 'UTF-8'); ?></span></td>
-                                <td class="text-end">
-                                    <?php if ($canCancel): ?>
-                                        <button type="button" class="btn btn-sm btn-outline-danger cancel-booking-btn" data-id="<?php echo (int) $b['id']; ?>">
-                                            Cancel
-                                        </button>
-                                    <?php else: ?>
-                                        <span class="text-muted small">—</span>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+            <div class="row g-3" id="bookingCards">
+                <?php foreach ($userBookings as $b): ?>
+                    <?php
+                    $status = (string) $b['status'];
+                    $canCancel = in_array($status, ['pending', 'confirmed'], true);
+                    ?>
+                    <div class="col-xl-6 fade-up">
+                        <div class="booking-card" data-booking-id="<?php echo (int) $b['id']; ?>">
+                            <div class="booking-card-top">
+                                <div>
+                                    <span class="booking-ref"><?php echo htmlspecialchars($b['booking_ref'], ENT_QUOTES, 'UTF-8'); ?></span>
+                                    <h5><?php echo htmlspecialchars($b['destination_name'] ?: 'Trip booking', ENT_QUOTES, 'UTF-8'); ?></h5>
+                                </div>
+                                <span class="booking-badge status-<?php echo htmlspecialchars($status, ENT_QUOTES, 'UTF-8'); ?>">
+                                    <?php echo htmlspecialchars(ucfirst($status), ENT_QUOTES, 'UTF-8'); ?>
+                                </span>
+                            </div>
+
+                            <ul class="booking-meta">
+                                <li>
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Travel date
+                                    <strong><?php echo $b['travel_date'] ? date('M j, Y', strtotime($b['travel_date'])) : '—'; ?></strong>
+                                </li>
+                                <li>
+                                    <i class="fas fa-user-friends"></i>
+                                    Travelers
+                                    <strong><?php echo (int) $b['travelers']; ?></strong>
+                                </li>
+                                <li>
+                                    <i class="fas fa-dollar-sign"></i>
+                                    Total
+                                    <strong>$<?php echo htmlspecialchars(number_format((float) $b['total_amount'], 2), ENT_QUOTES, 'UTF-8'); ?></strong>
+                                </li>
+                            </ul>
+
+                            <div class="booking-card-actions">
+                                <?php if ($status === 'pending'): ?>
+                                    <a class="btn btn-sm btn-outline-success"
+                                        href="payment.php?ref=<?php echo urlencode($b['booking_ref']); ?>">
+                                        <i class="fas fa-credit-card me-1"></i>Complete payment
+                                    </a>
+                                <?php endif; ?>
+                                <?php if ($canCancel): ?>
+                                    <button type="button" class="btn btn-sm btn-outline-danger cancel-booking-btn" data-id="<?php echo (int) $b['id']; ?>">
+                                        Cancel
+                                    </button>
+                                <?php else: ?>
+                                    <span class="text-muted small align-self-center">No actions available</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         <?php endif; ?>
     </div>
@@ -625,8 +655,10 @@ $statusBadges = [
             var id = this.getAttribute('data-id');
             if (!confirm('Cancel this booking?')) return;
 
+            var card = this.closest('.booking-card');
+            if (card) card.classList.add('ui-card-busy');
             this.disabled = true;
-            this.textContent = 'Cancelling...';
+            this.innerHTML = '<span class="ui-spinner me-1"></span>Cancelling...';
 
             fetch((window.BASE_URL || '') + '/api/cancel_booking.php', {
                 method: 'POST',
@@ -643,12 +675,14 @@ $statusBadges = [
                         setTimeout(function () { window.location.reload(); }, 1000);
                     } else {
                         if (window.showToast) showToast(result.message || 'Could not cancel.', 'error');
+                        if (card) card.classList.remove('ui-card-busy');
                         btn.disabled = false;
                         btn.textContent = 'Cancel';
                     }
                 })
                 .catch(function () {
                     if (window.showToast) showToast('Network error.', 'error');
+                    if (card) card.classList.remove('ui-card-busy');
                     btn.disabled = false;
                     btn.textContent = 'Cancel';
                 });

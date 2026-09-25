@@ -50,6 +50,7 @@ $csrfToken = csrf_token();
     <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/chatbot.css'), ENT_QUOTES, 'UTF-8'); ?>" />
     <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/registration.css'), ENT_QUOTES, 'UTF-8'); ?>" />
     <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/login.css'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/polish.css'), ENT_QUOTES, 'UTF-8'); ?>" />
     <script src="<?php echo htmlspecialchars(asset('assets/js/toast.js'), ENT_QUOTES, 'UTF-8'); ?>" defer></script>
 </head>
 

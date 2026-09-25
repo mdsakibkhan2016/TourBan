@@ -265,11 +265,16 @@ $user = $auth->getCurrentUser();
     });
 
     function showNotification(message, type) {
-        // Remove existing notifications
+        // Unified toast system (assets/js/toast.js)
+        if (window.showToast) {
+            showToast(message, type === 'success' ? 'success' : 'error');
+            return;
+        }
+
+        // Fallback notification if the toast script is unavailable
         const existingNotifications = document.querySelectorAll('.notification');
         existingNotifications.forEach(notification => notification.remove());
 
-        // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
         notification.style.cssText = `
@@ -289,7 +294,6 @@ $user = $auth->getCurrentUser();
 
         document.body.appendChild(notification);
 
-        // Auto remove after 5 seconds
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.remove();

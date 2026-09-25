@@ -1,31 +1,53 @@
-/* Toast notifications */
+/* Toast notifications — showToast(message, type)
+   types: success | error | warn | info
+   Styled by assets/css/polish.css */
 function showToast(message, type) {
     type = type || 'info';
     var container = document.getElementById('toastContainer');
     if (!container) {
         container = document.createElement('div');
         container.id = 'toastContainer';
-        container.style.cssText = 'position:fixed;top:90px;right:16px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:340px;';
         document.body.appendChild(container);
     }
 
+    var icons = { success: '✓', error: '✕', warn: '!', info: 'i' };
+
     var toast = document.createElement('div');
     toast.className = 'toast-app toast-app-' + type;
-    toast.style.cssText =
-        'padding:12px 16px;border-radius:8px;color:#fff;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.15);' +
-        'opacity:0;transform:translateX(20px);transition:all .25s ease;' +
-        (type === 'success' ? 'background:#16a34a;' : type === 'error' ? 'background:#dc2626;' : type === 'warn' ? 'background:#d97706;' : 'background:#2563eb;');
-    toast.textContent = message;
+    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+    toast.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+
+    var icon = document.createElement('span');
+    icon.className = 'toast-app-icon';
+    icon.textContent = icons[type] || icons.info;
+
+    var text = document.createElement('span');
+    text.className = 'toast-app-msg';
+    text.textContent = message;
+
+    var close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'toast-app-close';
+    close.setAttribute('aria-label', 'Close notification');
+    close.innerHTML = '&times;';
+
+    var bar = document.createElement('span');
+    bar.className = 'toast-app-bar';
+
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    toast.appendChild(close);
+    toast.appendChild(bar);
     container.appendChild(toast);
 
-    requestAnimationFrame(function () {
-        toast.style.opacity = '1';
-        toast.style.transform = 'translateX(0)';
-    });
+    var removed = false;
+    function dismiss() {
+        if (removed) return;
+        removed = true;
+        toast.classList.add('toast-app-leaving');
+        setTimeout(function () { toast.remove(); }, 260);
+    }
 
-    setTimeout(function () {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(20px)';
-        setTimeout(function () { toast.remove(); }, 300);
-    }, 3500);
+    close.addEventListener('click', dismiss);
+    setTimeout(dismiss, 3600);
 }

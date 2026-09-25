@@ -416,3 +416,151 @@ body {
         font-size: 1.35rem;
     }
 }
+
+/* ---------------- Visual polish ---------------- */
+.admin-content {
+    animation: admin-rise 0.35s ease both;
+}
+
+@keyframes admin-rise {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.admin-stat-card {
+    position: relative;
+    overflow: hidden;
+}
+
+/* soft accent stripe on each stat card */
+.admin-stat-card::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--admin-primary), rgba(37, 99, 235, 0.25));
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.admin-stat-card:hover::after {
+    opacity: 1;
+}
+
+.admin-stat-number {
+    font-variant-numeric: tabular-nums;
+}
+
+.admin-card {
+    box-shadow: 0 1px 2px rgba(17, 24, 39, 0.04);
+    transition: box-shadow 0.2s ease;
+}
+
+.admin-card:hover {
+    box-shadow: 0 8px 22px rgba(17, 24, 39, 0.06);
+}
+
+.admin-card-header {
+    background: #fff;
+}
+
+/* stronger, readable empty state */
+.admin-empty {
+    border: 1px dashed var(--admin-border);
+    border-radius: 14px;
+    background: #fafbfe;
+    margin: 0.4rem;
+}
+
+/* subtle pulse draws attention to pending items */
+.admin-badge.status-pending {
+    animation: admin-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes admin-pulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.06); }
+}
+
+/* row transition + keyboard focus visibility */
+.admin-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.admin-table a,
+.admin-table button,
+.admin-table .btn {
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.admin-table .btn:focus-visible,
+.admin-nav-link:focus-visible,
+.admin-topbar .btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.28);
+}
+
+.admin-burger:hover {
+    background: var(--admin-bg);
+}
+
+/* sticky table header below the sticky topbar */
+.table-responsive-wrap {
+    max-height: none;
+}
+
+.admin-table thead th {
+    position: sticky;
+    top: 60px;
+    z-index: 1;
+}
+
+/* filters breathe on small screens */
+@media (max-width: 575.98px) {
+    .admin-filters .form-control,
+    .admin-filters .form-select {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.6rem 0.7rem;
+    }
+
+    .admin-card-body {
+        padding: 1rem;
+    }
+
+    .admin-stat-card {
+        padding: 1rem 1.05rem;
+        gap: 0.75rem;
+    }
+
+    .admin-stat-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.05rem;
+    }
+
+    .admin-inline-form {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.35rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .admin-content,
+    .admin-badge.status-pending {
+        animation: none;
+    }
+}
