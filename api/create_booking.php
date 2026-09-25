@@ -40,6 +40,10 @@ try {
     $result = $bookings->create((int) $user['id'], $destinationId, $travelDate, $travelers, $special);
 
     if ($result['success']) {
+        // Confirmation email (non-fatal: booking is already created)
+        require_once __DIR__ . '/../includes/mailer.php';
+        send_booking_confirmation((int) ($result['booking']['id'] ?? 0));
+
         http_response_code(201);
         echo json_encode($result);
     } else {

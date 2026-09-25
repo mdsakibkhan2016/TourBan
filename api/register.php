@@ -74,12 +74,7 @@ try {
         $emailSent = false;
         if ($otp !== null) {
             require_once __DIR__ . '/../includes/mailer.php';
-            $emailSent = send_app_mail(
-                $email,
-                'Your TourBan verification code',
-                "Hello {$name},\n\nYour TourBan verification code is: {$otp}\n\n"
-                . "It expires in 15 minutes. If you did not create this account, ignore this email.\n\n— TourBan"
-            );
+            $emailSent = send_otp_email($email, $name, $otp, 'registration');
         }
 
         http_response_code(201);

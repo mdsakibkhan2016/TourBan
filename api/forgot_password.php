@@ -26,16 +26,18 @@ try {
     }
 
     $auth = new Auth();
+    $account = $auth->findByEmail($email);
     $otp = $auth->startPasswordReset($email);
 
     $response = ['success' => true, 'message' => 'If that account exists, a reset code has been sent.'];
 
     if ($otp !== null) {
         require_once __DIR__ . '/../includes/mailer.php';
-        send_app_mail(
+        send_otp_email(
             $email,
-            'Your TourBan password reset code',
-            "Your password reset code is: {$otp}\n\nIt expires in 15 minutes. If you did not request this, ignore this email.\n\n— TourBan"
+            (string) ($account['name'] ?? 'Traveler'),
+            $otp,
+            'password_reset'
         );
     }
 

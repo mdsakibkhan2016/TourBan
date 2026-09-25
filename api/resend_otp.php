@@ -50,11 +50,7 @@ try {
 
     if ($otp !== null) {
         require_once __DIR__ . '/../includes/mailer.php';
-        $subject = $purpose === 'registration'
-            ? 'Your TourBan verification code'
-            : 'Your TourBan password reset code';
-        $body = "Your code is: {$otp}\n\nIt expires in 15 minutes. Do not share it with anyone.\n\n— TourBan";
-        send_app_mail($email, $subject, $body);
+        send_otp_email($email, (string) ($user['name'] ?? 'Traveler'), $otp, $purpose);
     }
 
     echo json_encode($generic);
