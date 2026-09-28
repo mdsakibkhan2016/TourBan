@@ -226,7 +226,7 @@ $total = $booking ? number_format((float) $booking['total_amount'], 2, '.', '') 
                             <div class="pay-line"><span class="label">Date</span>
                                 <strong><?php echo htmlspecialchars($payment['created_at'], ENT_QUOTES, 'UTF-8'); ?></strong></div>
                             <div class="mt-4">
-                                <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/dashboard.php" class="btn btn-primary w-100">View my bookings</a>
+                                <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/dashboard.php?msg=payment-success" class="btn btn-primary w-100">View my bookings</a>
                             </div>
                         </div>
                     </div>

@@ -36,19 +36,22 @@ function toggleChatbot() {
     const modal = document.getElementById('chatbot-modal');
     const overlay = document.getElementById('modal-overlay');
     const icon = document.querySelector('.chatbot-icon');
+    if (!modal || !overlay) return;
 
     if (modal.style.display === 'flex') {
         modal.style.display = 'none';
         overlay.style.display = 'none';
-        if (window.innerWidth <= 768) {
+        if (icon && window.innerWidth <= 768) {
             icon.style.display = 'flex';
         }
     } else {
         modal.style.display = 'flex';
         overlay.style.display = 'block';
-        if (window.innerWidth <= 768) {
+        if (icon && window.innerWidth <= 768) {
             icon.style.display = 'none';
         }
+        const input = document.getElementById('user-input');
+        if (input) input.focus();
     }
 }
 
@@ -115,4 +118,20 @@ function sendMessage(event) {
         });
 }
 
-document.querySelector('.chatbot-input-container').addEventListener('submit', sendMessage);
+document.addEventListener('DOMContentLoaded', function () {
+    const inputContainer = document.querySelector('.chatbot-input-container');
+    if (inputContainer) {
+        inputContainer.addEventListener('submit', sendMessage);
+    }
+
+    // Keyboard accessibility: Enter/Space on the icon
+    const icon = document.querySelector('.chatbot-icon');
+    if (icon) {
+        icon.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleChatbot();
+            }
+        });
+    }
+});

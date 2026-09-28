@@ -70,7 +70,7 @@ $csrfToken = csrf_token();
                 <img
                     src="<?php echo htmlspecialchars(asset('assets/images/logo.png'), ENT_QUOTES, 'UTF-8'); ?>"
                     alt="Tourist Logo"
-                    height="50"
+                    height="40"
                     class="d-inline-block align-text-top" />
             </a>
 

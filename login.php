@@ -18,6 +18,16 @@ if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true) {
 }
 
 include 'includes/header.php';
+
+// Flash messages from registration / password reset flows
+$flashMessage = '';
+if (($_GET['msg'] ?? '') === 'registered') {
+    $flashMessage = 'Account created successfully. Sign in to continue.';
+} elseif (($_GET['msg'] ?? '') === 'verified') {
+    $flashMessage = 'Email verified successfully. Sign in to continue.';
+} elseif (($_GET['msg'] ?? '') === 'reset') {
+    $flashMessage = 'Password updated successfully. Sign in with your new password.';
+}
 ?>
 <!-- Login Section Start -->
 <section class="login-section" style="margin-top: 76px">
@@ -29,6 +39,12 @@ include 'includes/header.php';
                         <h2 class="login-title">Welcome Back</h2>
                         <p class="login-subtitle">Sign in to your account</p>
                     </div>
+
+                    <?php if ($flashMessage !== ''): ?>
+                        <div class="alert alert-success" style="margin-bottom: 1rem;">
+                            <?php echo htmlspecialchars($flashMessage, ENT_QUOTES, 'UTF-8'); ?>
+                        </div>
+                    <?php endif; ?>
 
                     <form id="loginForm" class="login-form">
                         <div class="form-group">

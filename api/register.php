@@ -62,35 +62,18 @@ try {
         exit;
     }
 
-    // Registration sends a verification email — cap volume per IP (40 / 15 min)
-    $mailIpKey = 'otpmail:ip:' . client_ip();
-    if (rate_limit_exceeded($mailIpKey, 40, 900)) {
-        json_error(429, 'Too many requests. Please wait a few minutes and try again.');
-    }
-
-    // Attempt registration
+    // Attempt registration — account is active immediately (no mandatory
+    // email OTP). Password-reset OTP flow is unaffected and still secured
+    // by its own rate limits in api/forgot_password.php / api/reset_password.php.
     $auth = new Auth();
     $result = $auth->register($name, $email, $password, $address);
 
     if ($result['success']) {
-        rate_limit_record($mailIpKey, 40, 900);
-        // Generate OTP + email verification (non-fatal if mail transport fails)
-        $userId = (int) ($result['user_id'] ?? 0);
-        $otp = $userId > 0 ? $auth->createOtp($userId, $email, 'registration') : null;
-
-        $emailSent = false;
-        if ($otp !== null) {
-            require_once __DIR__ . '/../includes/mailer.php';
-            $emailSent = send_otp_email($email, $name, $otp, 'registration');
-        }
-
         http_response_code(201);
         echo json_encode([
             'success' => true,
-            'message' => $emailSent
-                ? 'Account created. Check your email for the verification code.'
-                : 'Account created. If you do not receive an email, request a new code on the verification page.',
-            'requires_verification' => true,
+            'message' => 'Account created successfully. You can sign in now.',
+            'requires_verification' => false,
             'email' => $email
         ]);
     } else {

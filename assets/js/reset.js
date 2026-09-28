@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(function (result) {
                 if (result.success) {
                     alert(result.message || 'Password updated.');
-                    window.location.href = (window.BASE_URL || '') + '/login.php';
+                    window.location.href = (window.BASE_URL || '') + '/login.php?msg=reset';
                 } else {
                     alert(result.message || 'Reset failed.');
                 }

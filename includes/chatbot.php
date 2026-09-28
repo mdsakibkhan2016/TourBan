@@ -26,8 +26,13 @@
 
 <div class="chatbot-widget-container">
     <!-- Chat Icon -->
-    <div class="chatbot-icon" onclick="toggleChatbot()">
-        <img src="<?php echo htmlspecialchars(asset('assets/images/chat-bot.png'), ENT_QUOTES, 'UTF-8'); ?>" alt="AI Assistant" class="chatbot-avatar" />
+    <div class="chatbot-icon" onclick="toggleChatbot()" role="button" tabindex="0" aria-label="Open AI travel assistant">
+        <img
+            src="<?php echo htmlspecialchars(asset('assets/images/chat-bot.png'), ENT_QUOTES, 'UTF-8'); ?>"
+            alt="AI Assistant"
+            class="chatbot-avatar"
+            onerror="this.style.display='none'; var fb=this.nextElementSibling; if (fb) fb.style.display='block';" />
+        <i class="fas fa-robot chatbot-fallback-icon" aria-hidden="true" style="display: none;"></i>
         <span class="chatbot-status-online"></span>
     </div>
 </div>

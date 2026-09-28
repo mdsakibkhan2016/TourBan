@@ -8,7 +8,10 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 1002; /* Highest z-index for visibility */
+    z-index: 1100; /* Above navbar (1030) and admin/sidebar overlays (1040) */
+    display: block;
+    visibility: visible;
+    opacity: 1;
 }
 
 @media (max-width: 768px) {
@@ -32,19 +35,25 @@
 }
 
 .chatbot-icon {
+    position: relative; /* anchors the online status dot */
     display: flex;
     justify-content: center;
     align-items: center;
     width: 60px;
     height: 60px;
     background-color: white;
-    color: #ffffff;
+    color: var(--primary);
     border-radius: 50%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: transform 0.3s ease-in-out;
     object-fit: cover;
     padding: 10px;
+}
+
+.chatbot-fallback-icon {
+    font-size: 1.7rem;
+    color: var(--primary);
 }
 
 .chatbot-icon:hover {
@@ -59,7 +68,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1001; /* Below chatbot modal but above other elements */
+    z-index: 1101; /* Below chatbot modal but above other elements */
 }
 
 .chatbot-modal {
@@ -72,7 +81,7 @@
     background-color: #fff;
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    z-index: 1003; /* Highest z-index for modal */
+    z-index: 1102; /* Highest z-index for modal */
     flex-direction: column;
     overflow: hidden;
     border: 1px solid #ddd;

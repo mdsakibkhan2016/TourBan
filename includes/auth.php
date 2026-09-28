@@ -35,8 +35,8 @@ class Auth
             // Hash password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            // Insert user (unverified until OTP confirmation)
-            $sql = "INSERT INTO users (name, email, password, address, is_verified) VALUES (?, ?, ?, ?, 0)";
+            // Insert user (active immediately — registration OTP is no longer mandatory)
+            $sql = "INSERT INTO users (name, email, password, address, is_verified) VALUES (?, ?, ?, ?, 1)";
             $stmt = $this->db->prepare($sql);
             $result = $stmt->execute([$name, $email, $hashedPassword, $address]);
 

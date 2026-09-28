@@ -46,7 +46,7 @@ function handleVerify(e) {
             if (result.success) {
                 showMsg(form, result.message, true);
                 setTimeout(function () {
-                    window.location.href = (window.BASE_URL || '') + '/login.php';
+                    window.location.href = (window.BASE_URL || '') + '/login.php?msg=verified';
                 }, 1200);
             } else {
                 showMsg(form, result.message || 'Verification failed.', false);

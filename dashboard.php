@@ -650,6 +650,21 @@ foreach ($userBookings as $ub) {
 </script>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var msg = new URLSearchParams(window.location.search).get('msg');
+        var messages = {
+            'payment-success': ['Payment received — your booking is confirmed.', 'success']
+        };
+        if (msg && messages[msg] && window.showToast) {
+            showToast(messages[msg][0], messages[msg][1]);
+            if (window.history && window.history.replaceState) {
+                window.history.replaceState({}, '', window.location.pathname);
+            }
+        }
+    });
+</script>
+
+<script>
     document.querySelectorAll('.cancel-booking-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
             var id = this.getAttribute('data-id');
