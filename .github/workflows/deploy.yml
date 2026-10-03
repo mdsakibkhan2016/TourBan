@@ -76,7 +76,7 @@ jobs:
           } > .env
           echo "Created temporary .env ($(wc -c < .env) bytes)"
 
-      - name: Deploy via FTP
+           - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:
           server: ${{ secrets.FTP_SERVER }}
@@ -87,6 +87,7 @@ jobs:
           server-dir: /htdocs/
           timeout: 180000
           log-level: standard
+          dangerous-clean-slate: true
           exclude: |
             **/.git*
             **/.git*/**
