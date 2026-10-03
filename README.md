@@ -104,7 +104,7 @@ Copy `.env.example` to `.env`. **Never commit `.env`.**
 | `DB_PASS` | Yes | Database password |
 | `DB_CHARSET` | No | Default `utf8mb4` |
 | `GROQ_API_KEY` | Chatbot | Your Groq API key from [console.groq.com/keys](https://console.groq.com/keys) |
-| `GROQ_MODEL` | No | Default `llama-3.1-8b-instant` |
+| `GROQ_MODEL` | No | Default `openai/gpt-oss-20b` |
 | `MAIL_HOST` | Email | SMTP host (e.g. `smtp.gmail.com`). Empty = fall back to PHP `mail()` |
 | `MAIL_PORT` | Email | SMTP port, default `587` |
 | `MAIL_USERNAME` | Email | SMTP username / email address |
@@ -160,14 +160,17 @@ Repository → **Settings → Secrets and variables → Actions → New reposito
 | `DB_USER` | `if0_XXXXXXXX_user` |
 | `DB_PASS` | MySQL user password |
 | `GROQ_API_KEY` | Key from [console.groq.com/keys](https://console.groq.com/keys) |
-| `GROQ_MODEL` | `llama-3.1-8b-instant` |
+| `GROQ_MODEL` | `openai/gpt-oss-20b` |
 | `MAIL_HOST` | e.g. `smtp.gmail.com` (leave empty to use PHP `mail()`) |
 | `MAIL_PORT` | `587` |
 | `MAIL_USERNAME` | SMTP account email |
-| `MAIL_PASSWORD` | SMTP password / app password |
-| `MAIL_FROM` | e.g. `no-reply@your-domain.com` |
+| `MAIL_PASSWORD` | SMTP password / **Gmail App Password** (never the normal account password) |
+| `MAIL_FROM` | legacy alias, optional (falls back to `MAIL_FROM_ADDRESS`) |
+| `MAIL_FROM_ADDRESS` | Envelope + From address, e.g. `no-reply@your-domain.com` |
 | `MAIL_FROM_NAME` | `TourBan` |
 | `MAIL_ENCRYPTION` | `tls` |
+| `MAIL_LOGO_URL` | **HTTPS production logo**, e.g. `https://your-site.infinityfreeapp.com/assets/images/logo.png`. Leave empty to derive from `APP_URL`; email clients cannot load `http://localhost/...`, so set this in production. |
+| `OTP_EXPIRY_MINUTES` | `15` (default) |
 | `PAYMENT_GATEWAY` | `sandbox` (default) |
 | `SSLCOMMERZ_STORE_ID` | SSLCommerz store id (optional) |
 | `SSLCOMMERZ_STORE_PASSWORD` | SSLCommerz store password (optional) |
@@ -185,12 +188,13 @@ Repository → **Settings → Secrets and variables → Actions → New reposito
 2. Set it in `.env` (local) or your hosting environment panel (production):
 
    ```env
-   GROQ_API_KEY=gsk_your_real_key
-   GROQ_MODEL=llama-3.1-8b-instant
+   GROQ_API_KEY=<paste-your-groq-key-here>
+   GROQ_MODEL=openai/gpt-oss-20b
    ```
 
 3. The browser only calls `api/chatbot.php`. The PHP endpoint reads `GROQ_API_KEY` server-side and calls `https://api.groq.com/openai/v1/chat/completions`. **The key is never sent to the client.**
 4. If `GROQ_API_KEY` is missing, the API returns HTTP 503: `AI assistant is not configured.`
+5. `openai/gpt-oss-20b` is the recommended active model. `llama-3.1-8b-instant` has been retired by Groq, so a stale `GROQ_MODEL` value is treated as unset (`chatbot_model()` in `includes/chatbot_context.php`) and, if Groq still answers `404 model_not_found`, the endpoint transparently retries once with the recommended model.
 
 ## Payments
 
@@ -288,7 +292,7 @@ Manual fallback:
 | `DB_USER` | Yes | e.g. `if0_12345678_admin` |
 | `DB_PASS` | Yes | MySQL user password from vPanel (not your account password) |
 | `GROQ_API_KEY` | Chatbot | Groq key from [console.groq.com/keys](https://console.groq.com/keys) — leave empty to get the friendly “not configured” error |
-| `GROQ_MODEL` | No | `llama-3.1-8b-instant` (default) |
+| `GROQ_MODEL` | No | `openai/gpt-oss-20b` (default) |
 
 Optional: `DB_CHARSET` (default `utf8mb4`).
 

@@ -28,7 +28,7 @@ include 'chatbot.php';
             <div class="footer-col">
                 <h4>Contact</h4>
                 <p><i class="fas fa-map-marker-alt"></i> 343/1, Nakhalpara, Dhaka</p>
-                <p><i class="fas fa-phone-alt"></i> +096 345 67890</p>
+                <p><i class="fas fa-phone-alt"></i> +8801301374299</p>
                 <p><i class="fas fa-envelope"></i> tourban@gmail.com</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-twitter"></i></a>
@@ -72,7 +72,7 @@ include 'chatbot.php';
 
         <div class="footer-bottom">
             <div class="copyright">
-                <p>&copy; <a href="#">TourBan</a>, All Right Reserved. Designed By <a href="#">Me</a></p>
+                <p>&copy; <a href="<?php echo htmlspecialchars(BASE_URL ?: '/', ENT_QUOTES, 'UTF-8'); ?>">TourBan</a>, All Right Reserved. Designed by <a href="https://mdsakibkhan.me/" target="_blank" rel="noopener noreferrer">MD SAKIB KHAN</a></p>
             </div>
             <div class="footer-nav">
                 <a href="#">Home</a>

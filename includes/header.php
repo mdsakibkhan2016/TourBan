@@ -53,13 +53,13 @@ $csrfToken = csrf_token();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
 
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/main.css'), ENT_QUOTES, 'UTF-8'); ?>" />
-    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/footer.css'), ENT_QUOTES, 'UTF-8'); ?>" />
-    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/chatbot.css'), ENT_QUOTES, 'UTF-8'); ?>" />
-    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/registration.css'), ENT_QUOTES, 'UTF-8'); ?>" />
-    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/login.css'), ENT_QUOTES, 'UTF-8'); ?>" />
-    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/polish.css'), ENT_QUOTES, 'UTF-8'); ?>" />
-    <script src="<?php echo htmlspecialchars(asset('assets/js/toast.js'), ENT_QUOTES, 'UTF-8'); ?>" defer></script>
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/main.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/footer.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/chatbot.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/registration.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/login.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/polish.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <script src="<?php echo htmlspecialchars(asset('assets/js/toast.js?v=1791051500'), ENT_QUOTES, 'UTF-8'); ?>" defer></script>
 </head>
 
 <body>
@@ -68,7 +68,7 @@ $csrfToken = csrf_token();
         <div class="container">
             <a class="navbar-brand" href="<?php echo htmlspecialchars($base ?: '/', ENT_QUOTES, 'UTF-8'); ?>">
                 <img
-                    src="<?php echo htmlspecialchars(asset('assets/images/logo.png'), ENT_QUOTES, 'UTF-8'); ?>"
+                    src="<?php echo htmlspecialchars(asset('assets/images/logo.png?v=1791051500'), ENT_QUOTES, 'UTF-8'); ?>"
                     alt="Tourist Logo"
                     height="40"
                     class="d-inline-block align-text-top" />

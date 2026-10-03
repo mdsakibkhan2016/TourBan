@@ -29,8 +29,11 @@ jobs:
           MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
           MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
           MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_FROM_ADDRESS: ${{ secrets.MAIL_FROM_ADDRESS }}
           MAIL_FROM_NAME: ${{ secrets.MAIL_FROM_NAME }}
           MAIL_ENCRYPTION: ${{ secrets.MAIL_ENCRYPTION }}
+          MAIL_LOGO_URL: ${{ secrets.MAIL_LOGO_URL }}
+          OTP_EXPIRY_MINUTES: ${{ secrets.OTP_EXPIRY_MINUTES }}
           PAYMENT_GATEWAY: ${{ secrets.PAYMENT_GATEWAY }}
           SSLCOMMERZ_STORE_ID: ${{ secrets.SSLCOMMERZ_STORE_ID }}
           SSLCOMMERZ_STORE_PASSWORD: ${{ secrets.SSLCOMMERZ_STORE_PASSWORD }}
@@ -51,14 +54,17 @@ jobs:
             echo "DB_USER=${DB_USER}"
             echo "DB_PASS=${DB_PASS}"
             echo "GROQ_API_KEY=${GROQ_API_KEY}"
-            echo "GROQ_MODEL=${GROQ_MODEL:-llama-3.1-8b-instant}"
+            echo "GROQ_MODEL=${GROQ_MODEL:-openai/gpt-oss-20b}"
             echo "MAIL_HOST=${MAIL_HOST}"
             echo "MAIL_PORT=${MAIL_PORT:-587}"
             echo "MAIL_USERNAME=${MAIL_USERNAME}"
             echo "MAIL_PASSWORD=${MAIL_PASSWORD}"
             echo "MAIL_FROM=${MAIL_FROM}"
+            echo "MAIL_FROM_ADDRESS=${MAIL_FROM_ADDRESS}"
             echo "MAIL_FROM_NAME=${MAIL_FROM_NAME:-TourBan}"
             echo "MAIL_ENCRYPTION=${MAIL_ENCRYPTION:-tls}"
+            echo "MAIL_LOGO_URL=${MAIL_LOGO_URL}"
+            echo "OTP_EXPIRY_MINUTES=${OTP_EXPIRY_MINUTES:-15}"
             echo "PAYMENT_GATEWAY=${PAYMENT_GATEWAY:-sandbox}"
             echo "SSLCOMMERZ_STORE_ID=${SSLCOMMERZ_STORE_ID}"
             echo "SSLCOMMERZ_STORE_PASSWORD=${SSLCOMMERZ_STORE_PASSWORD}"

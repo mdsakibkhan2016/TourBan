@@ -10,7 +10,9 @@ header('Content-Type: application/json');
 header('X-Content-Type-Options: nosniff');
 
 require_once __DIR__ . '/../config/env.php';
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/security.php';
+require_once __DIR__ . '/../includes/chatbot_context.php';
 
 // Same-origin only
 $origin = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -106,29 +108,13 @@ try {
         exit;
     }
 
-    $model = env('GROQ_MODEL', 'llama-3.1-8b-instant');
+    $model = chatbot_model();
     $endpoint = 'https://api.groq.com/openai/v1/chat/completions';
 
-    $systemPrompt = 'You are TourBan Travel Assistant, the official AI concierge of TourBan, '
-        . 'a modern tourism and travel booking platform.\n\n'
-        . 'Your role:\n'
-        . '- Advise travelers on destinations, itineraries, best travel seasons, budgets, flights, '
-        . 'hotels, local transport, visas, safety, and cultural tips.\n'
-        . '- TourBan featured destinations: Rome (Italy, 7 days, from $599), Santorini (Greece, 5 days, '
-        . 'from $799), Bali (Indonesia, 6 days, from $499), Paris (France, from $899), Tokyo (Japan, '
-        . 'from $1099), Maldives (from $1299).\n'
-        . '- When a user wants to book, tell them to pick their destination on the Destinations page and '
-        . 'complete the booking form (they must sign in first). Bookings are confirmed instantly with a '
-        . 'reference code starting with TB-.\n'
-        . '- Recommend browsing Destinations for the full catalog and Contact us for custom or group trips.\n\n'
-        . 'Style:\n'
-        . '- Be warm, concise, and practical; answer in the same language as the user.\n'
-        . '- Prefer short paragraphs and simple lists; suggest 2-3 concrete options when possible.\n'
-        . '- Never invent prices or availability beyond the figures above; say "check the Destinations '
-        . 'page for current pricing" otherwise.\n'
-        . '- You cannot access the user\'s account, payments, or bookings. For booking status questions, '
-        . 'direct them to their dashboard.\n'
-        . '- Stay on travel and tourism topics; politely decline unrelated or harmful requests.';
+    // System prompt is built from verified project facts plus the live public
+    // destination catalog, so the assistant answers about TourBan accurately
+    // and refuses to invent TourBan-specific facts.
+    $systemPrompt = tourban_system_prompt();
 
     $messages = [
         ['role' => 'system', 'content' => $systemPrompt],
@@ -178,6 +164,57 @@ try {
     }
 
     $data = json_decode($response, true);
+
+    // Unknown/retired model: Groq answers 404 model_not_found. Retry once with
+    // the recommended model so a stale GROQ_MODEL secret cannot break the chat.
+    $errorCode = $data['error']['code'] ?? '';
+    if ($httpCode === 404 && $errorCode === 'model_not_found') {
+        $fallbackModel = chatbot_default_model();
+        error_log('[TourBan] Groq model unavailable; retrying with default model "' . $fallbackModel . '"');
+
+        if ($model !== $fallbackModel) {
+            $model = $fallbackModel;
+
+            $retryPayload = $payload;
+            $retryPayload['model'] = $model;
+
+            $retry = curl_init($endpoint);
+            curl_setopt_array($retry, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST           => true,
+                CURLOPT_POSTFIELDS     => json_encode($retryPayload),
+                CURLOPT_HTTPHEADER     => [
+                    'Content-Type: application/json',
+                    'Authorization: Bearer ' . $apiKey,
+                ],
+                CURLOPT_TIMEOUT        => 30,
+                CURLOPT_CONNECTTIMEOUT => 10,
+            ]);
+
+            $retryResponse = curl_exec($retry);
+            $retryCode = (int) curl_getinfo($retry, CURLINFO_HTTP_CODE);
+            curl_close($retry);
+
+            if ($retryResponse !== false) {
+                $retryData = json_decode($retryResponse, true);
+                $retryReply = $retryData['choices'][0]['message']['content']
+                    ?? $retryData['choices'][0]['text']
+                    ?? null;
+
+                if ($retryCode >= 200 && $retryCode < 300 && $retryReply) {
+                    echo json_encode(['success' => true, 'reply' => $retryReply]);
+                    exit;
+                }
+            }
+        }
+
+        http_response_code(502);
+        echo json_encode([
+            'success' => false,
+            'message' => 'AI assistant is unavailable right now. Please contact the site admin.'
+        ]);
+        exit;
+    }
 
     if ($httpCode === 401 || $httpCode === 403) {
         // Invalid/revoked key — never echo the key or raw auth body to the client.

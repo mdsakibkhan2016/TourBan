@@ -132,7 +132,7 @@
                                 </div>
                                 <div>
                                     <h6 class="fw-bold mb-1">Phone</h6>
-                                    <p class="text-muted mb-0">+096 345 67890<br />Available 24/7</p>
+                                    <p class="text-muted mb-0">+8801301374299<br />Available 24/7</p>
                                 </div>
                             </div>
 
@@ -363,7 +363,7 @@
                         personalized recommendations and expert advice for your dream vacation.
                     </p>
                     <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
-                        <a href="tel:+0963456789" class="btn btn-light btn-lg px-5">
+                        <a href="tel:+8801301374299" class="btn btn-light btn-lg px-5">
                             <i class="fas fa-phone me-2"></i>Call Now
                         </a>
                         <a href="mailto:tourban@gmail.com" class="btn btn-outline-light btn-lg px-5">

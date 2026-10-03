@@ -329,15 +329,15 @@ foreach ($userBookings as $ub) {
             <div class="row g-3" id="bookingCards">
                 <?php foreach ($userBookings as $b): ?>
                     <?php
-                    $status = (string) $b['status'];
+                    $status = (string) ($b['status'] ?? '');
                     $canCancel = in_array($status, ['pending', 'confirmed'], true);
                     ?>
                     <div class="col-xl-6 fade-up">
                         <div class="booking-card" data-booking-id="<?php echo (int) $b['id']; ?>">
                             <div class="booking-card-top">
                                 <div>
-                                    <span class="booking-ref"><?php echo htmlspecialchars($b['booking_ref'], ENT_QUOTES, 'UTF-8'); ?></span>
-                                    <h5><?php echo htmlspecialchars($b['destination_name'] ?: 'Trip booking', ENT_QUOTES, 'UTF-8'); ?></h5>
+                                    <span class="booking-ref"><?php echo htmlspecialchars((string) ($b['booking_ref'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></span>
+                                    <h5><?php echo htmlspecialchars(($b['destinations'] ?? '') ?: 'Trip booking', ENT_QUOTES, 'UTF-8'); ?></h5>
                                 </div>
                                 <span class="booking-badge status-<?php echo htmlspecialchars($status, ENT_QUOTES, 'UTF-8'); ?>">
                                     <?php echo htmlspecialchars(ucfirst($status), ENT_QUOTES, 'UTF-8'); ?>
@@ -348,24 +348,24 @@ foreach ($userBookings as $ub) {
                                 <li>
                                     <i class="fas fa-calendar-alt"></i>
                                     Travel date
-                                    <strong><?php echo $b['travel_date'] ? date('M j, Y', strtotime($b['travel_date'])) : '—'; ?></strong>
+                                    <strong><?php echo !empty($b['travel_date']) ? date('M j, Y', strtotime((string) $b['travel_date'])) : '—'; ?></strong>
                                 </li>
                                 <li>
                                     <i class="fas fa-user-friends"></i>
                                     Travelers
-                                    <strong><?php echo (int) $b['travelers']; ?></strong>
+                                    <strong><?php echo (int) ($b['travelers'] ?? 0); ?></strong>
                                 </li>
                                 <li>
                                     <i class="fas fa-dollar-sign"></i>
                                     Total
-                                    <strong>$<?php echo htmlspecialchars(number_format((float) $b['total_amount'], 2), ENT_QUOTES, 'UTF-8'); ?></strong>
+                                    <strong>$<?php echo htmlspecialchars(number_format((float) ($b['total_amount'] ?? 0), 2), ENT_QUOTES, 'UTF-8'); ?></strong>
                                 </li>
                             </ul>
 
                             <div class="booking-card-actions">
                                 <?php if ($status === 'pending'): ?>
                                     <a class="btn btn-sm btn-outline-success"
-                                        href="payment.php?ref=<?php echo urlencode($b['booking_ref']); ?>">
+                                        href="payment.php?ref=<?php echo urlencode((string) ($b['booking_ref'] ?? '')); ?>">
                                         <i class="fas fa-credit-card me-1"></i>Complete payment
                                     </a>
                                 <?php endif; ?>
