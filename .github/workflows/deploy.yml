@@ -100,8 +100,15 @@ jobs:
             **/temporary/**
             **/temp/**
 
-      - name: Remove temporary .env from workspace
-        if: always()
-        run: |
-          rm -f .env
-          echo "Temporary .env removed"
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.4.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          server-dir: /htdocs/
+          timeout: 180000
+          log-level: standard
+          dangerous-clean-slate: true
