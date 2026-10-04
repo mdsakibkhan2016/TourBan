@@ -1,24 +1,46 @@
-﻿
-# Clean URLs - remove .php extension
+﻿# Clean URLs - remove .php extension (compatible with subdir and root hosting)
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /TourBan-Project/
-    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(TourBan-Project/)*([^/]+)\.php\s [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/api/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/admin/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/assets/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/includes/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/config/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/uploads/ [NC]
-    RewriteRule ^(.*)\.php$ /TourBan-Project/%2 [R=301,L]
+
+    # Determine RewriteBase dynamically for subfolder vs root
+    RewriteCond %{REQUEST_URI}::$1 ^(/.*?/)(.*)::\2$
+    RewriteRule ^(.*)$ - [E=BASE:%1]
+
+    # Redirect legacy .php URLs to clean URLs (skip protected areas)
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s(.+)\.php\s [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}api/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}admin/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}assets/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}includes/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}config/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}uploads/ [NC]
+    RewriteRule ^(.+)\.php$ %{ENV:BASE}%1 [R=301,L]
+
+    # Internally rewrite clean URLs to .php (skip existing files/dirs and protected areas)
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/api/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/admin/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/assets/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/includes/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/config/ [NC]
-    RewriteCond %{REQUEST_URI} !^/TourBan-Project/uploads/ [NC]
-    RewriteCond %{REQUEST_FILENAME}\.php -f
-    RewriteRule ^([^/.]+)/?$ $1.php [L]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}api/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}admin/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}assets/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}includes/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}config/ [NC]
+    RewriteCond %{REQUEST_URI} !^%{ENV:BASE}uploads/ [NC]
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^([^/.]+)/?$ %{ENV:BASE}$1.php [L]
+</IfModule>
+
+# Prevent access to sensitive files
+<FilesMatch "(\.(env|sql|bak|log|ini|sh|json|config|example)$|~$)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Prevent directory listing
+Options -Indexes
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options SAMEORIGIN
+    Header always set Referrer-Policy strict-origin-when-cross-origin
 </IfModule>
