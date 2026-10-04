@@ -192,7 +192,7 @@ Repository → **Settings → Secrets and variables → Actions → New reposito
    GROQ_MODEL=openai/gpt-oss-20b
    ```
 
-3. The browser only calls `api/chatbot.php`. The PHP endpoint reads `GROQ_API_KEY` server-side and calls `https://api.groq.com/openai/v1/chat/completions`. **The key is never sent to the client.**
+3. The browser only calls `api/assistant.php`. The PHP endpoint reads `GROQ_API_KEY` server-side and calls `https://api.groq.com/openai/v1/chat/completions`. **The key is never sent to the client.**
 4. If `GROQ_API_KEY` is missing, the API returns HTTP 503: `AI assistant is not configured.`
 5. `openai/gpt-oss-20b` is the recommended active model. `llama-3.1-8b-instant` has been retired by Groq, so a stale `GROQ_MODEL` value is treated as unset (`chatbot_model()` in `includes/chatbot_context.php`) and, if Groq still answers `404 model_not_found`, the endpoint transparently retries once with the recommended model.
 

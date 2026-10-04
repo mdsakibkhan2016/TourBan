@@ -21,14 +21,14 @@
 <div id="modal-overlay" class="modal-overlay" onclick="toggleChatbot()"></div>
 
 <!--Chatbot End-->
-<script src="<?php echo htmlspecialchars(asset('assets/js/chatbot.js?v=1791051486'), ENT_QUOTES, 'UTF-8'); ?>" defer></script>
+<script src="<?php echo htmlspecialchars(asset('assets/js/assistant.js?v=1791051486'), ENT_QUOTES, 'UTF-8'); ?>" defer></script>
 <!--Chatbot Start-->
 
 <div class="chatbot-widget-container">
     <!-- Chat Icon -->
     <div class="chatbot-icon" onclick="toggleChatbot()" role="button" tabindex="0" aria-label="Open AI travel assistant">
         <img
-            src="<?php echo htmlspecialchars(asset('assets/images/chat-bot.png?v=1791051486'), ENT_QUOTES, 'UTF-8'); ?>"
+            src="<?php echo htmlspecialchars(asset('assets/images/assistant.png?v=1791051486'), ENT_QUOTES, 'UTF-8'); ?>"
             alt="AI Assistant"
             class="chatbot-avatar"
             onerror="this.style.display='none'; var fb=this.nextElementSibling; if (fb) fb.style.display='block';" />

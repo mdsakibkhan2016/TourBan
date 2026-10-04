@@ -1,4 +1,4 @@
-const CHATBOT_API = (window.BASE_URL || '') + '/api/chatbot.php';
+const CHATBOT_API = (window.BASE_URL || '') + '/api/assistant.php';
 const CHATBOT_HISTORY_LIMIT = 10;
 
 let chatbotHistory = [];
