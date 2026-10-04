@@ -13,6 +13,7 @@ require_once __DIR__ . '/../config/env.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/security.php';
 require_once __DIR__ . '/../includes/chatbot_context.php';
+require_once __DIR__ . '/../includes/conversation.php';
 require_once __DIR__ . '/../includes/web_search.php';
 
 // Same-origin only
@@ -100,6 +101,14 @@ try {
     }
 
     // ------------------------------------------------------------------
+    // Natural conversation first
+    // ------------------------------------------------------------------
+    if (is_conversational_message($message)) {
+        echo json_encode(['success' => true, 'reply' => get_conversational_reply($message)]);
+        exit;
+    }
+
+    // ------------------------------------------------------------------
     // Web-grounded retrieval
     //
     // The model is used only to understand language/intent and to phrase the
@@ -110,13 +119,6 @@ try {
     $intent = $analysis['intent'];
     $location = $analysis['location'];
     $language = $analysis['language'];
-
-    // Not a web-information request: refuse deterministically so the model is
-    // never asked to improvise a joke, story or opinion.
-    if (web_search_is_smalltalk($message)) {
-        echo json_encode(['success' => true, 'reply' => web_scope_message()]);
-        exit;
-    }
 
     // Hotel / restaurant / attraction request with no destination yet.
     if ($analysis['needs_destination']) {
