@@ -1,47 +1,24 @@
-# TourBan production Apache configuration
-
-Options -Indexes
-
-# Protect environment and config files
-<FilesMatch "^\.env">
-    Require all denied
-</FilesMatch>
-
-<FilesMatch "\.(log|ini|md)$">
-    Require all denied
-</FilesMatch>
-
-# Block direct web access to config directory and internal files
+﻿
+# Clean URLs - remove .php extension
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^config(/|$) - [F,L,NC]
-    RewriteRule ^includes(/|$) - [F,L,NC]
-    RewriteRule ^admin/includes(/|$) - [F,L,NC]
-    RewriteRule ^migrations\.sql$ - [F,L,NC]
-    RewriteRule ^database\.sql$ - [F,L,NC]
-    RewriteRule ^\.env - [F,L,NC]
-    RewriteRule ^\.git - [F,L,NC]
-</IfModule>
-
-# Security headers
-<IfModule mod_headers.c>
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set Referrer-Policy "strict-origin-when-cross-origin"
-    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
-</IfModule>
-
-# Enable compression
-<IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
-</IfModule>
-
-# Cache static assets
-<IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresByType image/png "access plus 1 month"
-    ExpiresByType image/jpeg "access plus 1 month"
-    ExpiresByType image/svg+xml "access plus 1 month"
-    ExpiresByType text/css "access plus 1 week"
-    ExpiresByType application/javascript "access plus 1 week"
+    RewriteBase /TourBan-Project/
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/+(TourBan-Project/)*([^/]+)\.php\s [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/api/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/admin/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/assets/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/includes/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/config/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/uploads/ [NC]
+    RewriteRule ^(.*)\.php$ /TourBan-Project/%2 [R=301,L]
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/api/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/admin/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/assets/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/includes/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/config/ [NC]
+    RewriteCond %{REQUEST_URI} !^/TourBan-Project/uploads/ [NC]
+    RewriteCond %{REQUEST_FILENAME}\.php -f
+    RewriteRule ^([^/.]+)/?$ $1.php [L]
 </IfModule>

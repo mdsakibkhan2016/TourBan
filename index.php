@@ -1,4 +1,4 @@
-<?php include 'includes/header.php'; ?>
+﻿<?php include 'includes/header.php'; ?>
 
 <div>
     <!--Hero Section Start -->
@@ -213,7 +213,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0">
-                            <a href="booking.php?dest=rome-italy" class="btn btn-primary w-100">Book Now</a>
+                            <a href="booking?dest=rome-italy" class="btn btn-primary w-100">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -241,7 +241,7 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0">
-                            <a href="booking.php?dest=santorini-greece" class="btn btn-primary w-100">Book Now</a>
+                            <a href="booking?dest=santorini-greece" class="btn btn-primary w-100">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -267,13 +267,13 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent border-0">
-                            <a href="booking.php?dest=bali-indonesia" class="btn btn-primary w-100">Book Now</a>
+                            <a href="booking?dest=bali-indonesia" class="btn btn-primary w-100">Book Now</a>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="text-center mt-5">
-                <a href="destinations.php" class="btn btn-light btn-lg">View All Destinations</a>
+                <a href="destinations" class="btn btn-light btn-lg">View All Destinations</a>
             </div>
         </div>
     </section>

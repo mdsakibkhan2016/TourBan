@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/bookings.php';
 
@@ -49,8 +49,8 @@ $destinations = $bookingHelper->allDestinations();
                 <div class="text-center py-5">
                     <i class="fas fa-map-marker-alt fa-3x text-muted mb-3"></i>
                     <h5>No destinations available yet</h5>
-                    <p class="text-muted">Please check back soon — our team is curating new trips.</p>
-                    <a href="contact.php" class="btn btn-primary mt-2">Contact us for custom trips</a>
+                    <p class="text-muted">Please check back soon â€” our team is curating new trips.</p>
+                    <a href="contact" class="btn btn-primary mt-2">Contact us for custom trips</a>
                 </div>
             <?php else: ?>
                 <div class="row g-4" id="destinationGrid">
@@ -82,8 +82,8 @@ $destinations = $bookingHelper->allDestinations();
                                         <span><i class="fas fa-map-marker-alt me-1"></i> <?php echo htmlspecialchars($d['region'], ENT_QUOTES, 'UTF-8'); ?></span>
                                     </div>
                                     <div class="d-flex gap-2">
-                                        <a href="booking.php?dest=<?php echo urlencode($d['slug']); ?>" class="btn btn-primary flex-fill">Book Now</a>
-                                        <a href="contact.php" class="btn btn-outline-primary">Details</a>
+                                        <a href="booking?dest=<?php echo urlencode($d['slug']); ?>" class="btn btn-primary flex-fill">Book Now</a>
+                                        <a href="contact" class="btn btn-outline-primary">Details</a>
                                     </div>
                                 </div>
                             </div>
@@ -108,8 +108,8 @@ $destinations = $bookingHelper->allDestinations();
                         experts are ready to help you plan the perfect trip.
                     </p>
                     <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
-                        <a href="contact.php" class="btn btn-light btn-lg px-5">Plan My Trip</a>
-                        <a href="services.php" class="btn btn-outline-light btn-lg px-5">View Services</a>
+                        <a href="contact" class="btn btn-light btn-lg px-5">Plan My Trip</a>
+                        <a href="services" class="btn btn-outline-light btn-lg px-5">View Services</a>
                     </div>
                 </div>
             </div>

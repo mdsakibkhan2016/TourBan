@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once 'includes/auth.php';
 require_once 'includes/bookings.php';
 
@@ -239,16 +239,16 @@ foreach ($userBookings as $ub) {
         <div class="row align-items-center">
             <div class="col-lg-8">
                 <h1 class="display-4 fw-bold mb-3">
-                    Welcome back, <?php echo htmlspecialchars(explode(' ', $user['name'])[0]); ?>! 👋
+                    Welcome back, <?php echo htmlspecialchars(explode(' ', $user['name'])[0]); ?>! ðŸ‘‹
                 </h1>
                 <p class="lead mb-4">
                     Ready to plan your next adventure? Explore amazing destinations and create unforgettable memories.
                 </p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="destinations.php" class="btn btn-light btn-lg px-4">
+                    <a href="destinations" class="btn btn-light btn-lg px-4">
                         <i class="fas fa-map-marked-alt me-2"></i>Explore Destinations
                     </a>
-                    <a href="services.php" class="btn btn-outline-light btn-lg px-4">
+                    <a href="services" class="btn btn-outline-light btn-lg px-4">
                         <i class="fas fa-concierge-bell me-2"></i>Our Services
                     </a>
                 </div>
@@ -308,7 +308,7 @@ foreach ($userBookings as $ub) {
     <div class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
             <h3 class="section-title mb-0">My Bookings</h3>
-            <a href="destinations.php" class="btn btn-sm btn-outline-primary">Book a New Trip</a>
+            <a href="destinations" class="btn btn-sm btn-outline-primary">Book a New Trip</a>
         </div>
 
         <?php if (!$userBookings): ?>
@@ -317,11 +317,11 @@ foreach ($userBookings as $ub) {
                     <i class="fas fa-luggage-cart"></i>
                 </div>
                 <h5>No trips booked yet</h5>
-                <p>Your adventures are waiting. Browse our destinations and book your first trip — it only takes a minute.</p>
-                <a href="destinations.php" class="btn btn-primary me-2">
+                <p>Your adventures are waiting. Browse our destinations and book your first trip â€” it only takes a minute.</p>
+                <a href="destinations" class="btn btn-primary me-2">
                     <i class="fas fa-map-marked-alt me-2"></i>Explore Destinations
                 </a>
-                <a href="services.php" class="btn btn-outline-secondary">
+                <a href="services" class="btn btn-outline-secondary">
                     <i class="fas fa-concierge-bell me-2"></i>View Services
                 </a>
             </div>
@@ -348,7 +348,7 @@ foreach ($userBookings as $ub) {
                                 <li>
                                     <i class="fas fa-calendar-alt"></i>
                                     Travel date
-                                    <strong><?php echo !empty($b['travel_date']) ? date('M j, Y', strtotime((string) $b['travel_date'])) : '—'; ?></strong>
+                                    <strong><?php echo !empty($b['travel_date']) ? date('M j, Y', strtotime((string) $b['travel_date'])) : 'â€”'; ?></strong>
                                 </li>
                                 <li>
                                     <i class="fas fa-user-friends"></i>
@@ -365,7 +365,7 @@ foreach ($userBookings as $ub) {
                             <div class="booking-card-actions">
                                 <?php if ($status === 'pending'): ?>
                                     <a class="btn btn-sm btn-outline-success"
-                                        href="payment.php?ref=<?php echo urlencode((string) ($b['booking_ref'] ?? '')); ?>">
+                                        href="payment?ref=<?php echo urlencode((string) ($b['booking_ref'] ?? '')); ?>">
                                         <i class="fas fa-credit-card me-1"></i>Complete payment
                                     </a>
                                 <?php endif; ?>
@@ -394,7 +394,7 @@ foreach ($userBookings as $ub) {
                     </div>
                     <h4 class="fw-bold mb-1"><?php echo htmlspecialchars($user['name']); ?></h4>
                     <p class="text-muted mb-3"><?php echo htmlspecialchars($user['email']); ?></p>
-                    <a href="profile.php" class="btn btn-outline-primary btn-sm">
+                    <a href="profile" class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-edit me-2"></i>Edit Profile
                     </a>
                 </div>
@@ -434,7 +434,7 @@ foreach ($userBookings as $ub) {
             <h3 class="section-title">Quick Actions</h3>
             <div class="row g-3">
                 <div class="col-12">
-                    <a href="destinations.php" class="quick-action-card d-block">
+                    <a href="destinations" class="quick-action-card d-block">
                         <div class="quick-action-icon gradient-bg-1 text-white">
                             <i class="fas fa-map-marked-alt"></i>
                         </div>
@@ -443,7 +443,7 @@ foreach ($userBookings as $ub) {
                     </a>
                 </div>
                 <div class="col-12">
-                    <a href="services.php" class="quick-action-card d-block">
+                    <a href="services" class="quick-action-card d-block">
                         <div class="quick-action-icon gradient-bg-2 text-white">
                             <i class="fas fa-concierge-bell"></i>
                         </div>
@@ -452,7 +452,7 @@ foreach ($userBookings as $ub) {
                     </a>
                 </div>
                 <div class="col-12">
-                    <a href="contact.php" class="quick-action-card d-block">
+                    <a href="contact" class="quick-action-card d-block">
                         <div class="quick-action-icon gradient-bg-3 text-white">
                             <i class="fas fa-headset"></i>
                         </div>
@@ -550,7 +550,7 @@ foreach ($userBookings as $ub) {
                 </div>
             </div>
             <div class="text-center mt-4">
-                <a href="destinations.php" class="btn btn-primary btn-lg px-5">
+                <a href="destinations" class="btn btn-primary btn-lg px-5">
                     <i class="fas fa-globe me-2"></i>View All Destinations
                 </a>
             </div>
@@ -653,7 +653,7 @@ foreach ($userBookings as $ub) {
     document.addEventListener('DOMContentLoaded', function () {
         var msg = new URLSearchParams(window.location.search).get('msg');
         var messages = {
-            'payment-success': ['Payment received — your booking is confirmed.', 'success']
+            'payment-success': ['Payment received â€” your booking is confirmed.', 'success']
         };
         if (msg && messages[msg] && window.showToast) {
             showToast(messages[msg][0], messages[msg][1]);

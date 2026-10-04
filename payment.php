@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once 'includes/auth.php';
 require_once 'includes/security.php';
 require_once 'includes/bookings.php';
@@ -191,7 +191,7 @@ $total = $booking ? number_format((float) $booking['total_amount'], 2, '.', '') 
                         </div>
                         <div class="payment-body text-center">
                             <p class="mb-3 text-danger"><?php echo htmlspecialchars($bookingError, ENT_QUOTES, 'UTF-8'); ?></p>
-                            <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/dashboard.php" class="btn btn-outline-primary">Back to my bookings</a>
+                            <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/dashboard" class="btn btn-outline-primary">Back to my bookings</a>
                         </div>
                     </div>
 
@@ -201,8 +201,8 @@ $total = $booking ? number_format((float) $booking['total_amount'], 2, '.', '') 
                             <h1>Payment</h1>
                         </div>
                         <div class="payment-body text-center">
-                            <p class="mb-3">Booking <strong><?php echo htmlspecialchars($booking['booking_ref'], ENT_QUOTES, 'UTF-8'); ?></strong> has been cancelled — no payment is due.</p>
-                            <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/dashboard.php" class="btn btn-outline-primary">Back to my bookings</a>
+                            <p class="mb-3">Booking <strong><?php echo htmlspecialchars($booking['booking_ref'], ENT_QUOTES, 'UTF-8'); ?></strong> has been cancelled â€” no payment is due.</p>
+                            <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/dashboard" class="btn btn-outline-primary">Back to my bookings</a>
                         </div>
                     </div>
 
@@ -284,7 +284,7 @@ $total = $booking ? number_format((float) $booking['total_amount'], 2, '.', '') 
                             </button>
 
                             <a class="d-block text-center mt-3 text-muted" style="font-size:.9rem"
-                                href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/dashboard.php">Pay later — back to my bookings</a>
+                                href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/dashboard">Pay later â€” back to my bookings</a>
                         </div>
                     </div>
                 <?php endif; ?>

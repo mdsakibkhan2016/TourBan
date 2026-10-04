@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once 'includes/auth.php';
 
 $auth = new Auth();
@@ -197,7 +197,7 @@ $user = $auth->getCurrentUser();
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mt-4 pt-4 border-top">
-                        <a href="dashboard.php" class="btn btn-outline-secondary btn-custom">
+                        <a href="dashboard" class="btn btn-outline-secondary btn-custom">
                             <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                         </a>
                         <button type="submit" class="btn btn-primary btn-custom">

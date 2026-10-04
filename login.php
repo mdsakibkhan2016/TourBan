@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/config/env.php';
 
 // Check if user is already logged in
 secure_session_start();
 
-// Optional post-login redirect (same-site paths only — no open redirects).
+// Optional post-login redirect (same-site paths only â€” no open redirects).
 $redirectParam = isset($_GET['redirect']) && is_string($_GET['redirect']) ? $_GET['redirect'] : '';
 $isLocalRedirect = $redirectParam !== ''
     && strpos($redirectParam, '/') === 0
@@ -83,7 +83,7 @@ if (($_GET['msg'] ?? '') === 'registered') {
                             </div>
                             <p class="text-center">
                                 Don't have an account?
-                                <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/register.php" class="register-link">Sign up</a>
+                                <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/register" class="register-link">Sign up</a>
                             </p>
                         </div>
                     </form>

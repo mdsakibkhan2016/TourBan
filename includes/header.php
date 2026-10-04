@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/../config/env.php';
 require_once __DIR__ . '/../includes/security.php';
 
@@ -91,16 +91,16 @@ $csrfToken = csrf_token();
                         <a class="nav-link active" href="<?php echo htmlspecialchars($base ?: '/', ENT_QUOTES, 'UTF-8'); ?>">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/about.php">About</a>
+                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/about">About</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/services.php">Services</a>
+                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/services">Services</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/destinations.php">Destinations</a>
+                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/destinations">Destinations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/contact.php">Contact</a>
+                        <a class="nav-link" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/contact">Contact</a>
                     </li>
                 </ul>
                 <div class="d-flex">
@@ -111,10 +111,10 @@ $csrfToken = csrf_token();
                                 <i class="fas fa-user me-2"></i><?php echo htmlspecialchars($userName); ?>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/dashboard.php"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-                                <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/profile.php"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
+                                <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/dashboard"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                                <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/profile"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
                                 <?php if ($isAdmin): ?>
-                                    <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/admin/index.php"><i class="fas fa-user-shield me-2"></i>Admin Panel</a></li>
+                                    <li><a class="dropdown-item" href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/admin/"><i class="fas fa-user-shield me-2"></i>Admin Panel</a></li>
                                 <?php endif; ?>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -124,8 +124,8 @@ $csrfToken = csrf_token();
                         </div>
                     <?php else: ?>
                         <!-- User is not logged in - show login/register buttons -->
-                        <a href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/login.php" class="btn btn-outline-primary px-4 me-2">Login</a>
-                        <a href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/register.php" class="btn btn-primary px-4">Register</a>
+                        <a href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/login" class="btn btn-outline-primary px-4 me-2">Login</a>
+                        <a href="<?php echo htmlspecialchars($base, ENT_QUOTES, 'UTF-8'); ?>/register" class="btn btn-primary px-4">Register</a>
                     <?php endif; ?>
                 </div>
             </div>

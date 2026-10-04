@@ -1,4 +1,4 @@
-<?php include 'includes/header.php'; ?>
+﻿<?php include 'includes/header.php'; ?>
 <div>
     <!-- Hero Section -->
     <section class="bg-primary text-white py-5" style="margin-top: 76px">
@@ -262,8 +262,8 @@
                         Let us help you create memories that will last a lifetime.
                     </p>
                     <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
-                        <a href="contact.php" class="btn btn-primary btn-lg px-5">Contact Us</a>
-                        <a href="destinations.php" class="btn btn-outline-primary btn-lg px-5">View Destinations</a>
+                        <a href="contact" class="btn btn-primary btn-lg px-5">Contact Us</a>
+                        <a href="destinations" class="btn btn-outline-primary btn-lg px-5">View Destinations</a>
                     </div>
                 </div>
             </div>

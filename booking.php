@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/includes/bookings.php';
 
@@ -12,7 +12,7 @@ $destination = $slug !== '' ? $helper->findDestinationBySlug($slug) : null;
 include 'includes/header.php';
 
 if (!$destination && empty($_GET['dest'])) {
-    // No destination selected — show picker style empty state
+    // No destination selected â€” show picker style empty state
 }
 ?>
 <section class="py-5" style="margin-top: 76px; min-height: 70vh;">
@@ -23,7 +23,7 @@ if (!$destination && empty($_GET['dest'])) {
                     <i class="fas fa-route fa-3x text-primary mb-3"></i>
                     <h2 class="fw-bold">Choose a destination</h2>
                     <p class="text-muted">Pick a destination from our catalog to start your booking.</p>
-                    <a href="destinations.php" class="btn btn-primary px-4">Browse Destinations</a>
+                    <a href="destinations" class="btn btn-primary px-4">Browse Destinations</a>
                 </div>
             </div>
         <?php else: ?>
@@ -37,9 +37,9 @@ if (!$destination && empty($_GET['dest'])) {
                             <h2 class="fw-bold"><?php echo htmlspecialchars($destination['name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                             <p class="text-muted mb-2">
                                 <i class="fas fa-map-marker-alt me-1"></i><?php echo htmlspecialchars($destination['region'] . ', ' . $destination['country'], ENT_QUOTES, 'UTF-8'); ?>
-                                &nbsp;·&nbsp;
+                                &nbsp;Â·&nbsp;
                                 <i class="fas fa-clock me-1"></i><?php echo (int) $destination['duration_days']; ?> Days
-                                &nbsp;·&nbsp;
+                                &nbsp;Â·&nbsp;
                                 <i class="fas fa-star text-warning me-1"></i><?php echo htmlspecialchars($destination['rating'], ENT_QUOTES, 'UTF-8'); ?>
                             </p>
                             <p><?php echo htmlspecialchars($destination['description'], ENT_QUOTES, 'UTF-8'); ?></p>
@@ -54,9 +54,9 @@ if (!$destination && empty($_GET['dest'])) {
 
                             <?php if (!$loggedIn): ?>
                                 <div class="alert alert-info">
-                                    Please <a href="login.php">sign in</a> to complete your booking.
+                                    Please <a href="login">sign in</a> to complete your booking.
                                 </div>
-                                <a href="login.php" class="btn btn-primary w-100">Sign In to Book</a>
+                                <a href="login" class="btn btn-primary w-100">Sign In to Book</a>
                             <?php else: ?>
                                 <form id="bookingForm">
                                     <input type="hidden" id="destination_id" value="<?php echo (int) $destination['id']; ?>">
@@ -83,7 +83,7 @@ if (!$destination && empty($_GET['dest'])) {
                                     <div class="mb-3">
                                         <label for="special_requests" class="form-label fw-semibold">Special requests (optional)</label>
                                         <textarea class="form-control" id="special_requests" rows="3"
-                                                  placeholder="Dietary needs, hotel preferences…"></textarea>
+                                                  placeholder="Dietary needs, hotel preferencesâ€¦"></textarea>
                                     </div>
 
                                     <div class="mb-3 d-flex justify-content-between border-top pt-3">

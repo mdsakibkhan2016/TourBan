@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/config/env.php';
 
 // Check if user is already logged in
@@ -62,7 +62,7 @@ include 'includes/header.php';
                         <div class="registration-footer">
                             <p class="text-center">
                                 Already have an account?
-                                <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/login.php" class="login-link">Sign in</a>
+                                <a href="<?php echo htmlspecialchars(BASE_URL, ENT_QUOTES, 'UTF-8'); ?>/login" class="login-link">Sign in</a>
                             </p>
                         </div>
                     </form>
