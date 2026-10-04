@@ -55,7 +55,7 @@ $csrfToken = csrf_token();
     <!-- Custom Styles -->
     <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/main.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
     <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/footer.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
-    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/tourban-chatbot.css?v=1791075840'), ENT_QUOTES, 'UTF-8'); ?>" />
+    <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/chatbot-style.css?v=1791075840'), ENT_QUOTES, 'UTF-8'); ?>" />
     <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/registration.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
     <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/login.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
     <link rel="stylesheet" href="<?php echo htmlspecialchars(asset('assets/css/polish.css?v=1791051482'), ENT_QUOTES, 'UTF-8'); ?>" />
