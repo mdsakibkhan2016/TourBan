@@ -42,20 +42,28 @@ if (!function_exists('rate_limit_exceeded')) {
         }
 
         try {
+            // Staleness is evaluated by the database, using the same clock as
+            // rate_limit_record(). Comparing the stored timestamp against PHP's
+            // time() breaks whenever the PHP and database time zones differ
+            // (for example PHP in Europe/Berlin against a UTC+6 server), which
+            // would leave the window permanently open and lock the user out
+            // for good once the limit was reached.
             $stmt = $db->prepare(
-                'SELECT hits, first_hit_at FROM rate_limits WHERE attempt_key = ? LIMIT 1'
+                'SELECT hits,
+                        (first_hit_at < NOW() - INTERVAL ? SECOND) AS stale
+                   FROM rate_limits
+                  WHERE attempt_key = ?
+                  LIMIT 1'
             );
-            $stmt->execute([$key]);
+            $stmt->execute([$windowSeconds, $key]);
             $row = $stmt->fetch();
 
             if (!$row) {
                 return false;
             }
 
-            // Window expired -> the counter is stale and will be reset on record
-            $stale = strtotime($row['first_hit_at']) !== false
-                && (time() - strtotime($row['first_hit_at'])) >= $windowSeconds;
-            if ($stale) {
+            // Window expired -> the counter is stale and will be reset on record.
+            if ((int) $row['stale'] === 1) {
                 return false;
             }
 

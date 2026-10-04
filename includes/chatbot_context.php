@@ -233,3 +233,180 @@ if (!function_exists('tourban_system_prompt')) {
         return $prompt;
     }
 }
+
+if (!function_exists('web_grounded_system_prompt')) {
+    /**
+     * System prompt for web-grounded answers.
+     *
+     * The model's only jobs are understanding the user's language and intent,
+     * interpreting the retrieved results, and writing the reply. The retrieved
+     * results are the sole factual evidence.
+     *
+     * @param array $results Retrieval entries: source, title, snippet, url.
+     */
+    function web_grounded_system_prompt(array $results, array $language, string $intent, string $location): string
+    {
+        $owner = tourban_owner_name();
+        $ownerUrl = tourban_owner_url();
+        $email = tourban_support_email();
+        $phone = tourban_support_phone();
+
+        $evidence = "RETRIEVED WEB RESULTS (the ONLY factual evidence for this answer):\n";
+        $i = 0;
+        $usedLinks = [];
+        foreach ($results as $r) {
+            $i++;
+            $source = trim((string) ($r['source'] ?? 'Web'));
+            $title = trim((string) ($r['title'] ?? ''));
+            $snippet = trim((string) ($r['snippet'] ?? ''));
+            $url = trim((string) ($r['url'] ?? ''));
+
+            if ($snippet === '') {
+                continue;
+            }
+
+            $evidence .= "\n[" . $i . "] source: " . $source . "\n";
+            if ($title !== '') {
+                $evidence .= "title: " . $title . "\n";
+            }
+            $evidence .= "excerpt: " . $snippet . "\n";
+            if ($url !== '' && preg_match('#^https?://#i', $url)) {
+                $evidence .= "url: " . $url . "\n";
+                $usedLinks[] = $url;
+            }
+        }
+
+        $prompt = "You are the TourBan Travel Assistant, the web-powered travel information\n"
+            . "assistant of TourBan, a travel booking platform.\n\n";
+
+        $prompt .= "CRITICAL GROUNDING RULES:\n"
+            . "You are not the source of factual information.\n"
+            . "Only the retrieved web results are factual evidence.\n"
+            . "Never use your pretrained knowledge to fill missing information.\n"
+            . "If the retrieved results do not contain enough information to answer the question,\n"
+            . "say that reliable web information could not be found.\n"
+            . "Never fabricate a result.\n"
+            . "- Every factual statement in your reply must be traceable to the retrieved results\n"
+            . "  below. Do not add facts that were not present in the retrieved data.\n"
+            . "- Your own background knowledge is not a source. Even for facts you believe are\n"
+            . "  true, do not state them unless the retrieved results contain them.\n"
+            . "- If the results are off-topic, too thin, or do not cover what was asked, reply\n"
+            . "  that reliable web information could not be found for that request. Do not fill\n"
+            . "  the gap yourself.\n\n";
+
+        $prompt .= "NEVER INVENT:\n"
+            . "- Do not state hotel prices, rates, room availability or booking availability.\n"
+            . "  Include such details only if the retrieved results actually state them.\n"
+            . "- Do not state ratings, review scores or review counts unless retrieved.\n"
+            . "- Do not state amenities, distances, opening hours or \"open now\" status unless\n"
+            . "  retrieved.\n"
+            . "- Do not claim an event, flight, price or availability is current or happening\n"
+            . "  today unless the retrieved results confirm it.\n"
+            . "- If a detail is not in the results, omit it silently. Never guess it.\n\n";
+
+        $prompt .= "SOURCES AND LINKS:\n"
+            . "- When you name a specific place, hotel, restaurant or attraction, cite the source\n"
+            . "  from the retrieved results and give its URL so the user can verify it.\n"
+            . "- Only use URLs that appear in the retrieved results. Never construct, guess or\n"
+            . "  invent a URL.\n"
+            . "- Present results as a short list. For each item give the name and the details that\n"
+            . "  the retrieved data actually contains.\n";
+
+        if ($usedLinks) {
+            $prompt .= "- The only linkable URLs available for this answer are:\n";
+            foreach ($usedLinks as $u) {
+                $prompt .= "  " . $u . "\n";
+            }
+            $prompt .= "- Cite sources by writing the full URL out in plain text directly after the\n"
+                . "  claim it supports, like this:\n"
+                . "  Le Severo is a restaurant in Paris (source: https://www.openstreetmap.org/node/175539450)\n"
+                . "- Never use numbered or bracketed citation markers such as [1], (1) or 【1】.\n"
+                . "  The reader must see the actual URL text, not a reference number.\n";
+        } else {
+            $prompt .= "- No usable source URL was retrieved, so do not present any links.\n";
+        }
+        $prompt .= "\n";
+
+        $prompt .= $evidence . "\n";
+
+        $prompt .= "TOURBAN INTERNAL RECORDS (only for identifying TourBan's own products):\n"
+            . "- TourBan owner and developer: {$owner} ({$ownerUrl})\n"
+            . "- Support email: {$email}\n"
+            . "- Support phone: {$phone}\n"
+            . "- These records identify TourBan's own services only. They are NOT a substitute for\n"
+            . "  web results and must never be used to answer external factual questions.\n";
+
+        $catalog = tourban_destination_context();
+        if ($catalog !== '') {
+            $prompt .= "- TourBan's own currently listed packages (use only when the user asks what\n"
+                . "  TourBan sells or how much a TourBan package costs):\n"
+                . $catalog . "\n";
+        }
+
+        $prompt .= "\nLANGUAGE:\n"
+            . "- Reply in {$language['reply']}.\n"
+            . "- If the user wrote in romanized Bangla (Banglish), a natural Banglish reply is fine.\n"
+            . "- Write your introductions, headings and connecting sentences in that language,\n"
+            . "  even when the retrieved names themselves are in Latin script. Never answer a\n"
+            . "  non-English question in English only.\n"
+            . "- Keep place names, hotel names and other proper names exactly as the retrieved\n"
+            . "  results spell them. Do not translate them.\n\n";
+
+        if ($location !== '') {
+            $prompt .= "The user is asking about: {$location}.\n";
+        }
+
+        $prompt .= "\nSTYLE:\n"
+            . "- The chat window shows plain text only. It does not render formatting.\n"
+            . "- Write plain text with NO markdown. Do not use **bold**, # headings, bullet\n"
+            . "  symbols from markdown, or [label](url) links. A simple dash or number followed\n"
+            . "  by a space is fine for list items.\n"
+            . "- Write URLs as plain text exactly as they appear in the results.\n"
+            . "- Name the place you are describing, so the answer is clear on its own.\n"
+            . "- Be practical and concise. Short paragraphs or a compact list.\n"
+            . "- If the user asked for hotels, restaurants, attractions or places, give concrete\n"
+            . "  named options with their source links.\n"
+            . "- Never open with a disclaimer about being an AI. Just answer.\n";
+
+        return $prompt;
+    }
+}
+
+if (!function_exists('web_no_results_message')) {
+    /** Deterministic reply when retrieval returned nothing usable. */
+    function web_no_results_message(): string
+    {
+        return "I couldn't find reliable web information for that request right now. "
+            . 'Please try a more specific destination or query.';
+    }
+}
+
+if (!function_exists('web_service_error_message')) {
+    /** Deterministic reply when the retrieval services themselves failed. */
+    function web_service_error_message(): string
+    {
+        return "I couldn't access the web information service right now. Please try again shortly.";
+    }
+}
+
+if (!function_exists('web_ask_destination_message')) {
+    /** Asked for hotels/restaurants/places but no destination was given. */
+    function web_ask_destination_message(): string
+    {
+        return 'Sure. Which city or destination are you looking for?';
+    }
+}
+
+if (!function_exists('web_scope_message')) {
+    /**
+     * Polite scope explanation for anything that is not web-based travel
+     * information. Returned without calling the model so no joke, story or
+     * opinion is ever generated.
+     */
+    function web_scope_message(): string
+    {
+        return "I'm designed to help with web-based travel and destination information. "
+            . 'Ask me about hotels, destinations, restaurants, attractions, or travel information, '
+            . 'and I will search the web for you.';
+    }
+}

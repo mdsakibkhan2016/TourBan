@@ -13,6 +13,7 @@ require_once __DIR__ . '/../config/env.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/security.php';
 require_once __DIR__ . '/../includes/chatbot_context.php';
+require_once __DIR__ . '/../includes/web_search.php';
 
 // Same-origin only
 $origin = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -98,6 +99,68 @@ try {
         }
     }
 
+    // ------------------------------------------------------------------
+    // Web-grounded retrieval
+    //
+    // The model is used only to understand language/intent and to phrase the
+    // answer. Factual content must come from the retrieved web results, so
+    // retrieval runs before the model is ever called.
+    // ------------------------------------------------------------------
+    $analysis = web_search_detect_intent($message);
+    $intent = $analysis['intent'];
+    $location = $analysis['location'];
+    $language = $analysis['language'];
+
+    // Not a web-information request: refuse deterministically so the model is
+    // never asked to improvise a joke, story or opinion.
+    if (web_search_is_smalltalk($message)) {
+        echo json_encode(['success' => true, 'reply' => web_scope_message()]);
+        exit;
+    }
+
+    // Hotel / restaurant / attraction request with no destination yet.
+    if ($analysis['needs_destination']) {
+        echo json_encode(['success' => true, 'reply' => web_ask_destination_message()]);
+        exit;
+    }
+
+    // A follow-up such as "where is that place?" names no place of its own and
+    // would otherwise match an article literally called "Place". Resolve the
+    // back-reference from the previous question before searching.
+    if ($location === '' && web_search_has_backreference($message)) {
+        $previousPlace = web_search_previous_place($history);
+        if ($previousPlace !== '') {
+            $resolved = web_search_resolve_followup($message, $previousPlace);
+            $retryIntent = web_search_detect_intent($resolved);
+            if ($retryIntent['location'] !== '') {
+                $message = $resolved;
+                $analysis = $retryIntent;
+                $intent = $retryIntent['intent'];
+                $location = $retryIntent['location'];
+            }
+        }
+    }
+
+    // TourBan's own products are answered from verified internal records, which
+    // are explicitly not a substitute for web results.
+    $useTourbanRecords = ($intent === 'tourban_product');
+
+    $search = ['status' => 'ok', 'results' => [], 'source_status' => []];
+    if (!$useTourbanRecords) {
+        $search = web_search_run($message, $intent, $location, $language);
+
+        if ($search['status'] === 'empty') {
+            echo json_encode(['success' => true, 'reply' => web_no_results_message()]);
+            exit;
+        }
+        if ($search['status'] === 'error') {
+            error_log('[TourBan] web search unavailable: '
+                . json_encode($search['source_status']));
+            echo json_encode(['success' => true, 'reply' => web_service_error_message()]);
+            exit;
+        }
+    }
+
     $apiKey = env('GROQ_API_KEY');
     if (!$apiKey || $apiKey === 'your_groq_api_key_here') {
         http_response_code(503);
@@ -111,10 +174,13 @@ try {
     $model = chatbot_model();
     $endpoint = 'https://api.groq.com/openai/v1/chat/completions';
 
-    // System prompt is built from verified project facts plus the live public
-    // destination catalog, so the assistant answers about TourBan accurately
-    // and refuses to invent TourBan-specific facts.
-    $systemPrompt = tourban_system_prompt();
+    // Ground the reply strictly in the retrieved web results. TourBan product
+    // questions instead use the verified project facts plus live catalog.
+    if ($useTourbanRecords) {
+        $systemPrompt = tourban_system_prompt();
+    } else {
+        $systemPrompt = web_grounded_system_prompt($search['results'], $language, $intent, $location);
+    }
 
     $messages = [
         ['role' => 'system', 'content' => $systemPrompt],
@@ -127,7 +193,7 @@ try {
     $payload = [
         'model' => $model,
         'messages' => $messages,
-        'temperature' => 0.7,
+        'temperature' => 0.3,
         'max_tokens' => 1024,
     ];
 
