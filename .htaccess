@@ -23,14 +23,14 @@ Options -Indexes
     RewriteRule ^\.git - [F,L,NC]
 
     # Clean URLs - redirect old .php URLs to clean
-    RewriteCond %{THE_REQUEST} /([^.]+)\.php [NC]
-    RewriteCond %{REQUEST_URI} !^/api/
-    RewriteCond %{REQUEST_URI} !^/admin/
-    RewriteCond %{REQUEST_URI} !^/assets/
-    RewriteCond %{REQUEST_URI} !^/includes/
-    RewriteCond %{REQUEST_URI} !^/config/
-    RewriteCond %{REQUEST_URI} !^/uploads/
-    RewriteRule ^([^.]+)\.php$ /%1 [R=301,L]
+    RewriteCond %{THE_REQUEST} \s/(?:[^/]+/)*([^.]+)\.php\s [NC]
+    RewriteCond %{REQUEST_URI} !^/api/ [NC]
+    RewriteCond %{REQUEST_URI} !^/admin/ [NC]
+    RewriteCond %{REQUEST_URI} !^/assets/ [NC]
+    RewriteCond %{REQUEST_URI} !^/includes/ [NC]
+    RewriteCond %{REQUEST_URI} !^/config/ [NC]
+    RewriteCond %{REQUEST_URI} !^/uploads/ [NC]
+    RewriteRule ^(?:[^/]+/)*([^.]+)\.php$ /%1 [R=301,L]
 
     # Clean URLs - internal rewrites (exclude protected)
     RewriteCond %{REQUEST_FILENAME} !-d
