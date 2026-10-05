@@ -411,7 +411,7 @@ class Auth
      */
     public function completePasswordReset(string $email, string $code, string $newPassword): bool
     {
-        if (strlen($newPassword) < 6) {
+        if (strlen($newPassword) < 8) {
             return false;
         }
 
